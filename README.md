@@ -1,19 +1,22 @@
 # hack-harness
 
-A Python command-line chat harness built with Semantic Kernel.
+A Python tool for comparing DOE (Department of Energy) orders against NETL (National Energy Technology Laboratory) orders to determine if the NETL orders need updating.
 
 ## What this does
 
-- Uses Semantic Kernel chat completion only (no Azure AI Agent Framework).
-- Supports two endpoint modes from `.env`:
-	- Azure OpenAI endpoint
-	- Foundry project endpoint with chat deployment
-- Optional MCP-like tool interface backed by a published OpenAPI 3.x spec.
-- Exits on `Ctrl+C` or `Ctrl+X`.
+- Accepts locally provided DOE and NETL order PDFs (no SharePoint API required).
+- Extracts text and structured metadata from each PDF using PyMuPDF.
+- Uses an LLM via Semantic Kernel to compare the orders and identify gaps.
+- Produces a JSON comparison report indicating whether NETL orders need updating.
+- Includes an interactive chat CLI for asking questions about directives.
 
 ## Files
 
+- `process_directives.py` - batch comparison pipeline (DOE vs NETL)
+- `directive_extractor.py` - LLM-based metadata extraction and comparison
+- `pdf_extractor.py` - PDF text extraction using PyMuPDF
 - `chat_cli.py` - interactive CLI chat app
+- `agents/directives.yaml` - system prompt for directive comparison
 - `requirements.txt` - Python dependencies
 - `.env` - runtime configuration
 
@@ -26,32 +29,66 @@ A Python command-line chat harness built with Semantic Kernel.
 pip install -r requirements.txt
 ```
 
-3. Edit `.env`.
+3. Edit `.env` with your Azure OpenAI or Foundry credentials.
 
-### Agent Prompt Configuration
+## Comparing DOE and NETL Orders
 
-This project loads a system prompt and optional few-shot examples from an agent config file in `agents/`.
+Place your PDF files in directories (or reference them directly):
 
-```env
-AGENT_PROMPT_FILE=agents/default.yaml
+```
+data/
+  doe/          # DOE order PDFs go here
+  netl/         # NETL order PDFs go here
 ```
 
-Expected YAML shape:
+Run the comparison pipeline:
 
-```yaml
-prompt: |
-	You are a helpful assistant...
+```bash
+# Compare directories of PDFs
+python process_directives.py --doe data/doe/ --netl data/netl/
 
-example:
-	- question: First user message
-		answer: First assistant response
-	- question: Second user message
-		answer: Second assistant response
+# Compare specific files
+python process_directives.py --doe path/to/doe_order.pdf --netl path/to/netl_order.pdf
+
+# Custom output path
+python process_directives.py --doe data/doe/ --netl data/netl/ -o my_report.json
 ```
 
-The `prompt` is added as a system message at startup, and each `example` pair is added to chat history before interactive input begins.
+The pipeline will:
+1. Extract text from all provided PDFs.
+2. Use the LLM to identify directive metadata (ID, title, dates, summary).
+3. Compare each NETL order against the DOE order(s).
+4. Output a JSON report with findings, gaps, and update recommendations.
 
-### Option A: Azure OpenAI
+### Output Format
+
+The comparison report (`data/comparison_report.json`) contains entries like:
+
+```json
+{
+  "needs_update": "yes",
+  "confidence": "high",
+  "doe_directive_id": "DOE O 151.1D",
+  "netl_directive_id": "NETL O 151.1-1",
+  "summary": "The NETL order references an older version...",
+  "key_gaps": ["Missing requirement for...", "Outdated reference to..."],
+  "recommendations": ["Update section 3.2 to...", "Add new requirement for..."]
+}
+```
+
+## Interactive Chat
+
+You can also use the interactive chat CLI to discuss directives:
+
+```bash
+AGENT_PROMPT_FILE=agents/directives.yaml python chat_cli.py
+```
+
+Type your message at `you>`. The app exits on `Ctrl+C` or `Ctrl+X`.
+
+### LLM Configuration
+
+#### Option A: Azure OpenAI
 
 ```env
 CHAT_PROVIDER=azure_openai
@@ -62,7 +99,7 @@ AZURE_OPENAI_CHAT_DEPLOYMENT=<your-chat-deployment-name>
 AZURE_OPENAI_API_VERSION=2024-10-21
 ```
 
-### Option B: Foundry project endpoint
+#### Option B: Foundry project endpoint
 
 ```env
 CHAT_PROVIDER=foundry
@@ -73,86 +110,8 @@ FOUNDRY_CHAT_DEPLOYMENT=<your-chat-deployment-name>
 FOUNDRY_API_VERSION=2024-10-21
 ```
 
-### Optional: Azure AI Search grounding
-
-You can ground responses with an Azure AI Search index in either provider mode.
-
-Set both of these values to enable grounding:
-
-```env
-AZURE_AI_SEARCH_ENDPOINT=https://<your-search-service>.search.windows.net
-AZURE_AI_SEARCH_INDEX_NAME=<your-index-name>
-```
-
-Authentication for Search:
-
-- API key mode: set `AZURE_AI_SEARCH_API_KEY`.
-- Keyless mode: leave `AZURE_AI_SEARCH_API_KEY` blank and use managed identity.
-
-Optional tuning:
-
-```env
-AZURE_AI_SEARCH_SEMANTIC_CONFIGURATION=<semantic-config-name>
-AZURE_AI_SEARCH_QUERY_TYPE=semantic
-AZURE_AI_SEARCH_IN_SCOPE=true
-AZURE_AI_SEARCH_STRICTNESS=3
-AZURE_AI_SEARCH_TOP_N_DOCUMENTS=5
-```
-
-When enabled, the CLI prints that grounding is active and shows the selected index name at startup.
-
-### Optional: MCP-like OpenAPI tools
-
-You can enable an MCP-style tool surface where each OpenAPI operation is exposed as a callable tool in the CLI.
-When configured, Semantic Kernel also loads the OpenAPI operations as a plugin and can automatically invoke tools during normal chat turns.
-
-```env
-MCP_OPENAPI_SPEC_URL=https://func-amdojxfludppe.azurewebsites.net/api/spec/openapi?code=<your-code>
-MCP_BASE_URL=
-MCP_TIMEOUT_SECONDS=30
-MCP_DEFAULT_HEADERS={}
-```
-
-Notes:
-
-- `MCP_OPENAPI_SPEC_URL` is required to enable MCP commands.
-- `MCP_BASE_URL` is optional; if empty, the app resolves a base URL from the spec. If the spec server points to localhost, it falls back to the spec URL host.
-- `MCP_DEFAULT_HEADERS` must be a JSON object string (for example `{"x-api-key":"..."}`).
-
-Interactive commands:
-
-```text
-/mcp tools
-/mcp tools/list
-/mcp call <tool_name> <json-args>
-/mcp tools/call <tool_name> <json-args>
-/mcp reload
-```
-
-Automatic mode:
-
-- Ask naturally in chat (for example, "What's the weather in Seattle?") and the model can automatically select and call MCP/OpenAPI tools.
-- Slash commands remain available for manual inspection and testing.
-
-Example:
-
-```text
-/mcp call getWeatherForecast {"latitude":47.6,"longitude":-122.3}
-```
-
-## Run
-
-```bash
-python chat_cli.py
-```
-
-Type your message at `you>`. The app exits immediately on `Ctrl+C` or `Ctrl+X`.
-
 ## Notes
 
-- The script is structured so you can later add grounding with Azure AI Search and tools backed by your Function App MCP server.
-- If your deployment requires a different API version, update the matching `*_API_VERSION` value in `.env`.
-- If the API key value is blank, the app automatically falls back to Azure Default Credential.
-- In `foundry` mode, keyless auth requests tokens for `https://ai.azure.com/.default`.
-- In `azure_openai` mode, keyless auth requests tokens for `https://cognitiveservices.azure.com/.default`.
-- In `foundry` mode, if you provide a project endpoint URL, the app automatically uses the account endpoint host for chat completion calls.
+- If the API key value is blank, the app falls back to Azure Default Credential.
+- The comparison pipeline sends document text to the LLM, so larger documents are truncated to fit token limits.
+- Scanned/image-only PDFs will not yield text — ensure PDFs contain selectable text.
