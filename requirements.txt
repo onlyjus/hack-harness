@@ -4,3 +4,7 @@ prompt_toolkit>=3.0.47
 azure-identity>=1.17.1
 PyYAML>=6.0.2
 PyMuPDF>=1.24.0
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+sse-starlette>=2.0.0
+python-multipart>=0.0.9

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOE / NETL Directive Comparator</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface2: #334155;
+      --border: #475569;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --orange: #f97316;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Upload Section */
+    #upload-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+
+    .file-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .file-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .file-group .sublabel {
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .drop-zone.has-file {
+      border-color: var(--green);
+      background: rgba(34, 197, 94, 0.05);
+    }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .drop-zone .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .drop-zone .filename {
+      color: var(--green);
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .drop-zone .hint {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    #submit-btn {
+      display: block;
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    #submit-btn:hover:not(:disabled) { background: var(--accent-hover); }
+    #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Progress Section */
+    #progress-section {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+
+    .progress-bar-track {
+      background: var(--surface2);
+      border-radius: 999px;
+      height: 12px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #6366f1);
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .progress-percentage {
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    #progress-log {
+      max-height: 240px;
+      overflow-y: auto;
+      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    #progress-log .log-entry {
+      padding: 0.15rem 0;
+    }
+
+    #progress-log .stage-tag {
+      display: inline-block;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-right: 0.5rem;
+    }
+
+    .stage-extract  .stage-tag { background: #1e3a5f; color: #60a5fa; }
+    .stage-metadata  .stage-tag { background: #3b1f5e; color: #a78bfa; }
+    .stage-sections  .stage-tag { background: #1a3a2a; color: #4ade80; }
+    .stage-compare   .stage-tag { background: #3d2f0a; color: #fbbf24; }
+    .stage-done      .stage-tag { background: #14532d; color: #22c55e; }
+    .stage-error     .stage-tag { background: #450a0a; color: #ef4444; }
+
+    /* Results Section */
+    #results-section {
+      display: none;
+    }
+
+    .result-header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .verdict-badge {
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .verdict-yes { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 2px solid var(--red); }
+    .verdict-no  { background: rgba(34, 197, 94, 0.15); color: var(--green); border: 2px solid var(--green); }
+    .verdict-uncertain { background: rgba(234, 179, 8, 0.15); color: var(--yellow); border: 2px solid var(--yellow); }
+
+    .result-meta h2 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .result-meta p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+    .result-meta .ids { font-size: 0.8rem; margin-top: 0.5rem; }
+    .result-meta .ids span { margin-right: 1.5rem; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card h3 .count {
+      background: var(--surface2);
+      border-radius: 999px;
+      padding: 0.1rem 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .finding {
+      border-left: 3px solid var(--border);
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .finding:last-child { margin-bottom: 0; }
+
+    .finding .finding-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .finding .finding-detail {
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+    }
+
+    .status-aligned       { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+    .status-misaligned    { background: rgba(239, 68, 68, 0.15); color: var(--red); }
+    .status-missing_from_netl { background: rgba(249, 115, 22, 0.15); color: var(--orange); }
+    .status-outdated      { background: rgba(234, 179, 8, 0.15); color: var(--yellow); }
+    .status-netl_only     { background: rgba(59, 130, 246, 0.15); color: var(--accent); }
+
+    .priority-high   { border-left-color: var(--red); }
+    .priority-medium { border-left-color: var(--yellow); }
+    .priority-low    { border-left-color: var(--green); }
+
+    #new-comparison-btn {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.7rem 1.5rem;
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    #new-comparison-btn:hover { background: var(--border); }
+
+    @media (max-width: 640px) {
+      .file-inputs { grid-template-columns: 1fr; }
+      .result-header { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>DOE / NETL Directive Comparator</h1>
+      <p>Upload a DOE order and its corresponding NETL order to check alignment</p>
+    </header>
+
+    <!-- Upload -->
+    <div id="upload-section">
+      <div class="file-inputs">
+        <div class="file-group">
+          <label>DOE Order <span class="sublabel">(parent directive)</span></label>
+          <div class="drop-zone" id="doe-drop">
+            <input type="file" id="doe-file" accept=".pdf">
+            <div class="icon">&#128196;</div>
+            <div class="hint">Drop PDF here or click to browse</div>
+          </div>
+        </div>
+        <div class="file-group">
+          <label>NETL Order <span class="sublabel">(site implementation)</span></label>
+          <div class="drop-zone" id="netl-drop">
+            <input type="file" id="netl-file" accept=".pdf">
+            <div class="icon">&#128196;</div>
+            <div class="hint">Drop PDF here or click to browse</div>
+          </div>
+        </div>
+      </div>
+      <button id="submit-btn" disabled>Compare Directives</button>
+    </div>
+
+    <!-- Progress -->
+    <div id="progress-section">
+      <div class="progress-percentage" id="progress-pct">0%</div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div id="progress-log"></div>
+    </div>
+
+    <!-- Results -->
+    <div id="results-section"></div>
+  </div>
+
+<script>
+// --- Drop zone setup ---
+function setupDropZone(dropId, inputId) {
+  const zone = document.getElementById(dropId);
+  const input = document.getElementById(inputId);
+
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) {
+      input.files = e.dataTransfer.files;
+      input.dispatchEvent(new Event('change'));
+    }
+  });
+
+  input.addEventListener('change', () => {
+    if (input.files.length) {
+      zone.classList.add('has-file');
+      zone.querySelector('.icon').textContent = '\u2705';
+      const hint = zone.querySelector('.hint');
+      if (hint) {
+        hint.className = 'filename';
+        hint.textContent = input.files[0].name;
+      }
+    }
+    checkReady();
+  });
+}
+
+setupDropZone('doe-drop', 'doe-file');
+setupDropZone('netl-drop', 'netl-file');
+
+const submitBtn = document.getElementById('submit-btn');
+
+function checkReady() {
+  const doe = document.getElementById('doe-file').files.length > 0;
+  const netl = document.getElementById('netl-file').files.length > 0;
+  submitBtn.disabled = !(doe && netl);
+}
+
+// --- Submit ---
+submitBtn.addEventListener('click', async () => {
+  const doeFile = document.getElementById('doe-file').files[0];
+  const netlFile = document.getElementById('netl-file').files[0];
+  if (!doeFile || !netlFile) return;
+
+  // Switch to progress view
+  document.getElementById('upload-section').style.display = 'none';
+  document.getElementById('progress-section').style.display = 'block';
+  document.getElementById('results-section').style.display = 'none';
+
+  const form = new FormData();
+  form.append('doe_file', doeFile);
+  form.append('netl_file', netlFile);
+
+  try {
+    const res = await fetch('/api/upload', { method: 'POST', body: form });
+    if (!res.ok) {
+      const err = await res.json();
+      alert('Upload failed: ' + (err.detail || res.statusText));
+      document.getElementById('upload-section').style.display = 'block';
+      document.getElementById('progress-section').style.display = 'none';
+      return;
+    }
+    const { job_id } = await res.json();
+    listenProgress(job_id);
+  } catch (e) {
+    alert('Upload error: ' + e.message);
+    document.getElementById('upload-section').style.display = 'block';
+    document.getElementById('progress-section').style.display = 'none';
+  }
+});
+
+// --- SSE progress ---
+function listenProgress(jobId) {
+  const log = document.getElementById('progress-log');
+  const fill = document.getElementById('progress-fill');
+  const pct = document.getElementById('progress-pct');
+
+  const es = new EventSource(`/api/status/${jobId}`);
+
+  es.addEventListener('progress', e => {
+    const data = JSON.parse(e.data);
+    fill.style.width = data.progress + '%';
+    pct.textContent = data.progress + '%';
+
+    const entry = document.createElement('div');
+    entry.className = `log-entry stage-${data.stage}`;
+    entry.innerHTML = `<span class="stage-tag">${data.stage}</span>${escapeHtml(data.detail)}`;
+    log.appendChild(entry);
+    log.scrollTop = log.scrollHeight;
+  });
+
+  es.addEventListener('complete', async e => {
+    es.close();
+    const data = JSON.parse(e.data);
+    if (data.status === 'done') {
+      const res = await fetch(`/api/report/${jobId}`);
+      const result = await res.json();
+      showResults(result.report);
+    } else {
+      pct.textContent = 'Error';
+      fill.style.background = 'var(--red)';
+    }
+  });
+
+  es.onerror = () => {
+    es.close();
+    pct.textContent = 'Connection lost';
+  };
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// --- Render results ---
+function showResults(report) {
+  document.getElementById('progress-section').style.display = 'none';
+  const section = document.getElementById('results-section');
+  section.style.display = 'block';
+
+  const needsUpdate = report.needs_update || 'uncertain';
+  const confidence = report.confidence || 'unknown';
+  const verdictClass = `verdict-${needsUpdate}`;
+  const verdictLabel = needsUpdate === 'yes' ? 'Update\nNeeded'
+                     : needsUpdate === 'no' ? 'Up to\nDate'
+                     : 'Uncertain';
+
+  let html = `
+    <div class="result-header">
+      <div class="verdict-badge ${verdictClass}">${verdictLabel}</div>
+      <div class="result-meta">
+        <h2>Comparison Result <span class="status-badge" style="font-size:0.7rem">Confidence: ${escapeHtml(confidence)}</span></h2>
+        <p>${escapeHtml(report.summary || '')}</p>
+        <div class="ids">
+          <span>DOE: <strong>${escapeHtml(report.doe_directive_id || report.doe_source_file || '')}</strong></span>
+          <span>NETL: <strong>${escapeHtml(report.netl_directive_id || report.netl_source_file || '')}</strong></span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Version alignment
+  if (report.version_alignment) {
+    const va = report.version_alignment;
+    html += `
+      <div class="card">
+        <h3>Version Alignment</h3>
+        <div class="finding">
+          <div class="finding-title">${va.aligned ? 'Aligned' : 'Not Aligned'}</div>
+          <div class="finding-detail">${escapeHtml(va.detail || '')}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Section-by-section
+  const sections = report.section_by_section || [];
+  if (sections.length) {
+    html += `<div class="card"><h3>Section-by-Section Findings <span class="count">${sections.length}</span></h3>`;
+    for (const s of sections) {
+      const sc = s.status || 'misaligned';
+      html += `
+        <div class="finding">
+          <div class="finding-title">${escapeHtml(s.topic || '')} <span class="status-badge status-${sc}">${sc.replace(/_/g, ' ')}</span></div>
+          <div class="finding-detail">${escapeHtml(s.detail || '')}</div>
+        </div>
+      `;
+    }
+    html += `</div>`;
+  }
+
+  // Missing requirements
+  const missing = report.missing_requirements || [];
+  if (missing.length) {
+    html += `<div class="card"><h3>Missing Requirements <span class="count">${missing.length}</span></h3>`;
+    for (const m of missing) {
+      html += `
+        <div class="finding priority-high">
+          <div class="finding-title">${escapeHtml(m.doe_requirement || '')}</div>
+          <div class="finding-detail">${escapeHtml(m.detail || '')}</div>
+        </div>
+      `;
+    }
+    html += `</div>`;
+  }
+
+  // Outdated references
+  const refs = report.outdated_references || [];
+  if (refs.length) {
+    html += `<div class="card"><h3>Outdated References <span class="count">${refs.length}</span></h3>`;
+    for (const r of refs) {
+      html += `
+        <div class="finding priority-medium">
+          <div class="finding-title">${escapeHtml(r.netl_reference || '')} → ${escapeHtml(r.current_reference || '')}</div>
+          <div class="finding-detail">${escapeHtml(r.detail || '')}</div>
+        </div>
+      `;
+    }
+    html += `</div>`;
+  }
+
+  // Responsibility gaps
+  const gaps = report.responsibility_gaps || [];
+  if (gaps.length) {
+    html += `<div class="card"><h3>Responsibility Gaps <span class="count">${gaps.length}</span></h3>`;
+    for (const g of gaps) {
+      html += `
+        <div class="finding">
+          <div class="finding-title">${escapeHtml(g.role || '')}</div>
+          <div class="finding-detail">${escapeHtml(g.gap || '')}</div>
+        </div>
+      `;
+    }
+    html += `</div>`;
+  }
+
+  // Definition differences
+  const defs = report.definition_differences || [];
+  if (defs.length) {
+    html += `<div class="card"><h3>Definition Differences <span class="count">${defs.length}</span></h3>`;
+    for (const d of defs) {
+      html += `
+        <div class="finding">
+          <div class="finding-title">${escapeHtml(d.term || '')}</div>
+          <div class="finding-detail">${escapeHtml(d.detail || '')}</div>
+        </div>
+      `;
+    }
+    html += `</div>`;
+  }
+
+  // Recommendations
+  const recs = report.recommendations || [];
+  if (recs.length) {
+    html += `<div class="card"><h3>Recommendations <span class="count">${recs.length}</span></h3>`;
+    for (const r of recs) {
+      const p = r.priority || 'medium';
+      html += `
+        <div class="finding priority-${p}">
+          <div class="finding-title">${escapeHtml(r.section || '')} <span class="status-badge">${p} priority</span></div>
+          <div class="finding-detail">${escapeHtml(r.action || '')}</div>
+        </div>
+      `;
+    }
+    html += `</div>`;
+  }
+
+  html += `<button id="new-comparison-btn" onclick="resetUI()">New Comparison</button>`;
+  section.innerHTML = html;
+}
+
+function resetUI() {
+  document.getElementById('upload-section').style.display = 'block';
+  document.getElementById('progress-section').style.display = 'none';
+  document.getElementById('results-section').style.display = 'none';
+
+  // Reset file inputs
+  document.getElementById('doe-file').value = '';
+  document.getElementById('netl-file').value = '';
+  for (const zone of document.querySelectorAll('.drop-zone')) {
+    zone.classList.remove('has-file');
+    zone.querySelector('.icon').textContent = '\uD83D\uDCC4';
+    const fn = zone.querySelector('.filename');
+    if (fn) { fn.className = 'hint'; fn.textContent = 'Drop PDF here or click to browse'; }
+  }
+
+  // Reset progress
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('progress-fill').style.background = '';
+  document.getElementById('progress-pct').textContent = '0%';
+  document.getElementById('progress-log').innerHTML = '';
+
+  submitBtn.disabled = true;
+}
+</script>
+</body>
+</html>
