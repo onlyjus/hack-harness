@@ -1,649 +1,1249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DOE / NETL Directive Comparator</title>
+  <title>Architectural Archive | NETL Document Archive</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "outline":               "#747781",
+            "outline-variant":       "#c4c6d1",
+            "inverse-on-surface":    "#f8efef",
+            "inverse-surface":       "#342f30",
+            "inverse-primary":       "#abc7ff",
+            "on-primary":            "#ffffff",
+            "on-secondary":          "#ffffff",
+            "on-tertiary":           "#ffffff",
+            "on-error":              "#ffffff",
+            "on-background":         "#1e1b1c",
+            "on-surface":            "#1e1b1c",
+            "on-surface-variant":    "#43474f",
+            "on-primary-container":  "#7796d1",
+            "on-secondary-container":"#4b6f00",
+            "on-tertiary-container": "#5f99de",
+            "on-error-container":    "#93000a",
+            "primary":               "#00193c",
+            "primary-container":     "#002d62",
+            "primary-fixed":         "#d7e2ff",
+            "primary-fixed-dim":     "#abc7ff",
+            "secondary":             "#466800",
+            "secondary-container":   "#bdf464",
+            "secondary-fixed":       "#bdf464",
+            "secondary-fixed-dim":   "#a2d74b",
+            "tertiary":              "#001b35",
+            "tertiary-container":    "#003057",
+            "tertiary-fixed":        "#d2e4ff",
+            "tertiary-fixed-dim":    "#a1c9ff",
+            "error":                 "#ba1a1a",
+            "error-container":       "#ffdad6",
+            "background":            "#fff8f8",
+            "surface":               "#fff8f8",
+            "surface-dim":           "#e1d8d9",
+            "surface-bright":        "#fff8f8",
+            "surface-tint":          "#3e5e95",
+            "surface-variant":       "#e9e0e1",
+            "surface-container-lowest":  "#ffffff",
+            "surface-container-low":     "#fbf1f2",
+            "surface-container":         "#f5eced",
+            "surface-container-high":    "#efe6e7",
+            "surface-container-highest": "#e9e0e1",
+          },
+          fontFamily: {
+            sans:     ["Public Sans", "system-ui", "sans-serif"],
+            headline: ["Public Sans"],
+            body:     ["Public Sans"],
+            label:    ["Public Sans"],
+          },
+          borderRadius: {
+            DEFAULT: "0.125rem",
+            lg:      "0.25rem",
+            xl:      "0.5rem",
+            "2xl":   "0.75rem",
+            "3xl":   "1rem",
+          },
+        },
+      },
+    };
+  </script>
+
   <style>
-    :root {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --surface2: #334155;
-      --border: #475569;
-      --text: #e2e8f0;
-      --text-muted: #94a3b8;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --green: #22c55e;
-      --red: #ef4444;
-      --yellow: #eab308;
-      --orange: #f97316;
+    body { font-family: 'Public Sans', sans-serif; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+    /* Ghost border utility */
+    .ghost-border {
+      border: 1px solid rgba(196, 198, 209, 0.15);
     }
 
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
+    /* Glassmorphism panel */
+    .glass-panel {
+      background: rgba(255, 248, 248, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 2.5rem;
+    /* Ambient shadow presets */
+    .shadow-ambient {
+      box-shadow: 0 8px 32px rgba(30, 27, 28, 0.05);
+    }
+    .shadow-ambient-lg {
+      box-shadow: 0 12px 40px rgba(30, 27, 28, 0.06);
     }
 
-    header h1 {
-      font-size: 1.75rem;
+    /* Headline letter-spacing */
+    .tracking-headline { letter-spacing: -0.02em; }
+
+    /* Label tracking */
+    .tracking-label { letter-spacing: 0.05em; }
+
+    /* Body line-height */
+    .leading-body { line-height: 1.6; }
+
+    /* Sidebar active state */
+    .nav-active {
+      background-color: #e9e0e1;
+      border-right: 4px solid #00193c;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      color: #00193c;
+    }
+    .nav-active:active { transform: scale(0.98); }
+
+    /* Progress bar gradient */
+    .progress-gradient {
+      background: linear-gradient(90deg, #00193c, #002d62);
     }
 
-    header p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
+    /* SSE log stage colors */
+    .stage-extract  .stage-tag { background: #d7e2ff; color: #00193c; }
+    .stage-metadata .stage-tag { background: #f5eced; color: #3e5e95; }
+    .stage-sections .stage-tag { background: #bdf464; color: #344e00; }
+    .stage-compare  .stage-tag { background: #ffdad6; color: #93000a; }
+    .stage-done     .stage-tag { background: #bdf464; color: #1e1b1c; }
+    .stage-error    .stage-tag { background: #ffdad6; color: #ba1a1a; }
 
-    /* Upload Section */
-    #upload-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-    }
-
-    .file-inputs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .file-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    .file-group .sublabel {
-      font-weight: 400;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-    }
-
-    .drop-zone {
-      border: 2px dashed var(--border);
-      border-radius: 8px;
-      padding: 2rem 1rem;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      position: relative;
-    }
-
-    .drop-zone:hover, .drop-zone.dragover {
-      border-color: var(--accent);
-      background: rgba(59, 130, 246, 0.05);
-    }
-
-    .drop-zone.has-file {
-      border-color: var(--green);
-      background: rgba(34, 197, 94, 0.05);
-    }
-
-    .drop-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .drop-zone .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .drop-zone .filename {
-      color: var(--green);
-      font-weight: 600;
-      word-break: break-all;
-    }
-
-    .drop-zone .hint {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    #submit-btn {
-      display: block;
-      width: 100%;
-      padding: 0.85rem;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    #submit-btn:hover:not(:disabled) { background: var(--accent-hover); }
-    #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* Progress Section */
-    #progress-section {
-      display: none;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-    }
-
-    .progress-bar-track {
-      background: var(--surface2);
-      border-radius: 999px;
-      height: 12px;
-      overflow: hidden;
-      margin-bottom: 1.5rem;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), #6366f1);
-      border-radius: 999px;
-      width: 0%;
-      transition: width 0.4s ease;
-    }
-
-    .progress-percentage {
-      text-align: center;
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-
-    #progress-log {
-      max-height: 240px;
-      overflow-y: auto;
-      font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-      font-size: 0.8rem;
-      line-height: 1.6;
-      color: var(--text-muted);
-    }
-
-    #progress-log .log-entry {
-      padding: 0.15rem 0;
-    }
-
-    #progress-log .stage-tag {
+    .stage-tag {
       display: inline-block;
       padding: 0.1rem 0.4rem;
       border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 600;
+      font-size: 0.65rem;
+      font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: 0.05em;
       margin-right: 0.5rem;
     }
 
-    .stage-extract  .stage-tag { background: #1e3a5f; color: #60a5fa; }
-    .stage-metadata  .stage-tag { background: #3b1f5e; color: #a78bfa; }
-    .stage-sections  .stage-tag { background: #1a3a2a; color: #4ade80; }
-    .stage-compare   .stage-tag { background: #3d2f0a; color: #fbbf24; }
-    .stage-done      .stage-tag { background: #14532d; color: #22c55e; }
-    .stage-error     .stage-tag { background: #450a0a; color: #ef4444; }
-
-    /* Results Section */
-    #results-section {
-      display: none;
+    /* Skeleton pulse */
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 0.5; }
+      50%      { opacity: 1; }
+    }
+    .skeleton {
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+      background: #e9e0e1;
+      border-radius: 0.5rem;
     }
 
-    .result-header {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem 2rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
+    /* Drop zone */
+    .drop-zone { transition: border-color 0.2s, background 0.2s; }
+    .drop-zone.dragover { border-color: #00193c; background: rgba(0,25,60,0.03); }
+    .drop-zone.has-file { border-color: #466800; background: rgba(70,104,0,0.03); }
+
+    /* Hide scrollbar on sidebar */
+    aside::-webkit-scrollbar { width: 0; }
+
+    /* Hide scrollbar utility */
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Responsive sidebar collapse */
+    @media (max-width: 1023px) {
+      #sidebar { width: 56px !important; }
+      #sidebar .nav-label, #sidebar .logo-text, #sidebar .sidebar-cta,
+      #sidebar .sidebar-footer-label { display: none; }
+      #sidebar .logo-icon { margin: 0 auto; }
+      main#main-content { margin-left: 56px !important; }
     }
-
-    .verdict-badge {
-      flex-shrink: 0;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      text-align: center;
-      line-height: 1.2;
-    }
-
-    .verdict-yes { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 2px solid var(--red); }
-    .verdict-no  { background: rgba(34, 197, 94, 0.15); color: var(--green); border: 2px solid var(--green); }
-    .verdict-uncertain { background: rgba(234, 179, 8, 0.15); color: var(--yellow); border: 2px solid var(--yellow); }
-
-    .result-meta h2 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-    .result-meta p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
-    .result-meta .ids { font-size: 0.8rem; margin-top: 0.5rem; }
-    .result-meta .ids span { margin-right: 1.5rem; }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .card h3 {
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .card h3 .count {
-      background: var(--surface2);
-      border-radius: 999px;
-      padding: 0.1rem 0.5rem;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .finding {
-      border-left: 3px solid var(--border);
-      padding: 0.75rem 1rem;
-      margin-bottom: 0.75rem;
-      font-size: 0.85rem;
-      line-height: 1.5;
-    }
-
-    .finding:last-child { margin-bottom: 0; }
-
-    .finding .finding-title {
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .finding .finding-detail {
-      color: var(--text-muted);
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 0.1rem 0.45rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      margin-left: 0.5rem;
-    }
-
-    .status-aligned       { background: rgba(34, 197, 94, 0.15); color: var(--green); }
-    .status-misaligned    { background: rgba(239, 68, 68, 0.15); color: var(--red); }
-    .status-missing_from_netl { background: rgba(249, 115, 22, 0.15); color: var(--orange); }
-    .status-outdated      { background: rgba(234, 179, 8, 0.15); color: var(--yellow); }
-    .status-netl_only     { background: rgba(59, 130, 246, 0.15); color: var(--accent); }
-
-    .priority-high   { border-left-color: var(--red); }
-    .priority-medium { border-left-color: var(--yellow); }
-    .priority-low    { border-left-color: var(--green); }
-
-    #new-comparison-btn {
-      display: inline-block;
-      margin-top: 1.5rem;
-      padding: 0.7rem 1.5rem;
-      background: var(--surface2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    #new-comparison-btn:hover { background: var(--border); }
-
-    @media (max-width: 640px) {
-      .file-inputs { grid-template-columns: 1fr; }
-      .result-header { flex-direction: column; text-align: center; }
+    @media (max-width: 767px) {
+      #sidebar { display: none; }
+      main#main-content { margin-left: 0 !important; }
+      #mobile-menu-btn { display: flex !important; }
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <header>
-      <h1>DOE / NETL Directive Comparator</h1>
-      <p>Upload a DOE order and its corresponding NETL order to check alignment</p>
-    </header>
 
-    <!-- Upload -->
-    <div id="upload-section">
-      <div class="file-inputs">
-        <div class="file-group">
-          <label>DOE Order <span class="sublabel">(parent directive)</span></label>
-          <div class="drop-zone" id="doe-drop">
-            <input type="file" id="doe-file" accept=".pdf">
-            <div class="icon">&#128196;</div>
-            <div class="hint">Drop PDF here or click to browse</div>
-          </div>
-        </div>
-        <div class="file-group">
-          <label>NETL Order <span class="sublabel">(site implementation)</span></label>
-          <div class="drop-zone" id="netl-drop">
-            <input type="file" id="netl-file" accept=".pdf">
-            <div class="icon">&#128196;</div>
-            <div class="hint">Drop PDF here or click to browse</div>
-          </div>
-        </div>
+<body class="bg-surface text-on-surface min-h-screen">
+
+<!-- SIDEBAR NAVIGATION -->
+<aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-surface-container-low flex flex-col py-6 z-40 overflow-y-auto">
+  <!-- Logo / Branding -->
+  <div class="px-6 mb-8">
+    <div class="flex items-center gap-3">
+      <div class="logo-icon w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary font-black text-lg">N</div>
+      <div class="logo-text">
+        <h1 class="font-black text-primary text-lg leading-none">NETL</h1>
+        <p class="text-[10px] uppercase tracking-widest text-outline">Document Archive</p>
       </div>
-      <button id="submit-btn" disabled>Compare Directives</button>
     </div>
-
-    <!-- Progress -->
-    <div id="progress-section">
-      <div class="progress-percentage" id="progress-pct">0%</div>
-      <div class="progress-bar-track">
-        <div class="progress-bar-fill" id="progress-fill"></div>
-      </div>
-      <div id="progress-log"></div>
-    </div>
-
-    <!-- Results -->
-    <div id="results-section"></div>
   </div>
 
+  <!-- Nav Links -->
+  <nav id="sidebar-nav" class="flex-1 px-4 space-y-1">
+    <a href="#/dashboard" data-route="dashboard"
+       class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200">
+      <span class="material-symbols-outlined">dashboard</span>
+      <span class="nav-label text-[11px] uppercase tracking-widest font-semibold">Dashboard</span>
+    </a>
+    <a href="#/library" data-route="library"
+       class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200">
+      <span class="material-symbols-outlined">library_books</span>
+      <span class="nav-label text-[11px] uppercase tracking-widest font-semibold">Directives Library</span>
+    </a>
+    <a href="#/compare" data-route="compare"
+       class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200">
+      <span class="material-symbols-outlined">compare_arrows</span>
+      <span class="nav-label text-[11px] uppercase tracking-widest font-semibold">Comparison Tool</span>
+    </a>
+    <a href="#/gaps" data-route="gaps"
+       class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200">
+      <span class="material-symbols-outlined">analytics</span>
+      <span class="nav-label text-[11px] uppercase tracking-widest font-semibold">Gap Analysis</span>
+    </a>
+    <a href="#/history" data-route="history"
+       class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200">
+      <span class="material-symbols-outlined">history</span>
+      <span class="nav-label text-[11px] uppercase tracking-widest font-semibold">History</span>
+    </a>
+  </nav>
+
+  <!-- New Comparison CTA -->
+  <div class="px-4 mb-6 sidebar-cta">
+    <a href="#/compare"
+       class="block w-full py-3 bg-primary text-on-primary font-bold text-xs uppercase tracking-widest rounded-xl text-center hover:opacity-90 transition-opacity">
+      New Comparison
+    </a>
+  </div>
+
+  <!-- Footer Links -->
+  <div class="px-4 pt-4 space-y-1" style="border-top: 1px solid rgba(196,198,209,0.15);">
+    <a href="#" class="flex items-center gap-3 px-4 py-2 text-outline hover:text-primary transition-colors">
+      <span class="material-symbols-outlined text-sm">help</span>
+      <span class="sidebar-footer-label text-[10px] uppercase tracking-wider font-bold">Support</span>
+    </a>
+    <a href="#" class="flex items-center gap-3 px-4 py-2 text-outline hover:text-primary transition-colors">
+      <span class="material-symbols-outlined text-sm">admin_panel_settings</span>
+      <span class="sidebar-footer-label text-[10px] uppercase tracking-wider font-bold">Archive Settings</span>
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT AREA -->
+<main id="main-content" class="ml-64 min-h-screen flex flex-col">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-30 bg-surface flex justify-between items-center w-full px-8 py-4">
+    <!-- Mobile menu button -->
+    <button id="mobile-menu-btn" class="hidden items-center justify-center p-2 mr-4 text-primary rounded-xl hover:bg-surface-container transition-colors"
+            onclick="document.getElementById('sidebar').classList.toggle('!block')">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <!-- Search -->
+    <div class="flex items-center flex-1 max-w-xl">
+      <div class="relative w-full">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+        <input type="text"
+               class="w-full pl-10 pr-4 py-2 bg-surface-container-highest rounded-xl text-sm ghost-border focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-outline-variant"
+               placeholder="Search archive directives...">
+      </div>
+    </div>
+
+    <!-- Tabs + Actions -->
+    <div class="flex items-center gap-8 ml-8">
+      <div class="hidden md:flex items-center gap-6">
+        <a href="#" class="text-primary font-bold border-b-2 border-primary pb-1 text-sm">Directives</a>
+        <a href="#" class="text-outline font-medium hover:text-primary transition-colors text-sm">DOE Orders</a>
+        <a href="#" class="text-outline font-medium hover:text-primary transition-colors text-sm">Manuals</a>
+      </div>
+      <div class="flex items-center gap-4" style="border-left: 1px solid rgba(196,198,209,0.15); padding-left: 2rem;">
+        <button class="p-2 text-outline hover:bg-surface-container rounded-full transition-colors relative" aria-label="Notifications">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+        </button>
+        <button class="p-2 text-outline hover:bg-surface-container rounded-full transition-colors" aria-label="Settings">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary text-xs font-bold">U</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <div id="app" class="flex-1"></div>
+
+</main>
+
+<!-- FLOATING ACTION TOOLBAR -->
+<div id="fab-toolbar" class="fixed bottom-8 right-8 z-50">
+  <div class="glass-panel flex items-center gap-2 p-2 rounded-full shadow-ambient-lg ghost-border">
+    <button onclick="window.location.hash='#/compare'" class="p-3 bg-surface hover:bg-surface-container text-primary rounded-full transition-all" title="Add Document">
+      <span class="material-symbols-outlined">add</span>
+    </button>
+    <button class="p-3 bg-surface hover:bg-surface-container text-primary rounded-full transition-all" title="Export PDF">
+      <span class="material-symbols-outlined">picture_as_pdf</span>
+    </button>
+    <div class="w-[1px] h-6 bg-outline/20 mx-1"></div>
+    <button onclick="window.location.hash='#/compare'"
+            class="p-3 bg-secondary text-on-secondary rounded-full shadow-lg hover:shadow-secondary/40 transition-all font-black flex items-center gap-2 px-6">
+      <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">compare_arrows</span>
+      <span class="text-xs uppercase tracking-widest">Compare</span>
+    </button>
+  </div>
+</div>
+
+<!-- APPLICATION JAVASCRIPT -->
 <script>
-// --- Drop zone setup ---
-function setupDropZone(dropId, inputId) {
-  const zone = document.getElementById(dropId);
-  const input = document.getElementById(inputId);
+// Shared State
+var AppState = {
+  selectedDirectives: [],
+  activeJob: null,
+  currentRoute: null,
+};
 
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-  zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.classList.remove('dragover');
-    if (e.dataTransfer.files.length) {
-      input.files = e.dataTransfer.files;
-      input.dispatchEvent(new Event('change'));
-    }
-  });
+// Router
+var routes = [
+  { pattern: /^#\/dashboard$/,             name: 'dashboard', render: renderDashboard },
+  { pattern: /^#\/library$/,               name: 'library',   render: renderLibrary },
+  { pattern: /^#\/compare\/([a-f0-9]+)$/,  name: 'compare',   render: renderCompareJob },
+  { pattern: /^#\/compare$/,               name: 'compare',   render: renderCompareUpload },
+  { pattern: /^#\/gaps\/([a-f0-9]+)$/,     name: 'gaps',      render: renderGaps },
+  { pattern: /^#\/gaps$/,                  name: 'gaps',      render: renderGapsEmpty },
+  { pattern: /^#\/history$/,               name: 'history',   render: renderHistory },
+];
 
-  input.addEventListener('change', () => {
-    if (input.files.length) {
-      zone.classList.add('has-file');
-      zone.querySelector('.icon').textContent = '\u2705';
-      const hint = zone.querySelector('.hint');
-      if (hint) {
-        hint.className = 'filename';
-        hint.textContent = input.files[0].name;
-      }
+function navigate() {
+  var hash = window.location.hash || '#/dashboard';
+  var container = document.getElementById('app');
+  var matched = false;
+
+  // Restore FAB toolbar visibility when navigating away from comparison view
+  var fab = document.getElementById('fab-toolbar');
+  if (fab) fab.style.display = '';
+
+  for (var i = 0; i < routes.length; i++) {
+    var route = routes[i];
+    var m = hash.match(route.pattern);
+    if (m) {
+      AppState.currentRoute = route.name;
+      updateActiveNav(route.name);
+      route.render(container, m[1], m[2]);
+      matched = true;
+      break;
     }
-    checkReady();
-  });
+  }
+
+  if (!matched) {
+    window.location.hash = '#/dashboard';
+  }
 }
 
-setupDropZone('doe-drop', 'doe-file');
-setupDropZone('netl-drop', 'netl-file');
-
-const submitBtn = document.getElementById('submit-btn');
-
-function checkReady() {
-  const doe = document.getElementById('doe-file').files.length > 0;
-  const netl = document.getElementById('netl-file').files.length > 0;
-  submitBtn.disabled = !(doe && netl);
+function updateActiveNav(routeName) {
+  var links = document.querySelectorAll('#sidebar-nav .nav-link');
+  for (var i = 0; i < links.length; i++) {
+    var link = links[i];
+    if (link.dataset.route === routeName) {
+      link.className = 'nav-link nav-active flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200';
+    } else {
+      link.className = 'nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container transition-all duration-200';
+    }
+  }
 }
 
-// --- Submit ---
-submitBtn.addEventListener('click', async () => {
-  const doeFile = document.getElementById('doe-file').files[0];
-  const netlFile = document.getElementById('netl-file').files[0];
-  if (!doeFile || !netlFile) return;
+window.addEventListener('hashchange', navigate);
+window.addEventListener('DOMContentLoaded', navigate);
 
-  // Switch to progress view
-  document.getElementById('upload-section').style.display = 'none';
-  document.getElementById('progress-section').style.display = 'block';
-  document.getElementById('results-section').style.display = 'none';
+// Utility
+function escapeHtml(s) {
+  var d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
 
-  const form = new FormData();
-  form.append('doe_file', doeFile);
-  form.append('netl_file', netlFile);
+function skeletonBlock(h, w) {
+  return '<div class="skeleton ' + (h || 'h-4') + ' ' + (w || 'w-full') + '"></div>';
+}
 
-  try {
-    const res = await fetch('/api/upload', { method: 'POST', body: form });
-    if (!res.ok) {
-      const err = await res.json();
-      alert('Upload failed: ' + (err.detail || res.statusText));
-      document.getElementById('upload-section').style.display = 'block';
-      document.getElementById('progress-section').style.display = 'none';
+// ── VIEW: DASHBOARD ──
+function renderDashboard(container) {
+  container.innerHTML = '\
+  <div class="p-8 space-y-12">\
+    <section>\
+      <div class="flex items-baseline justify-between mb-6">\
+        <h2 class="text-3xl font-black tracking-headline text-primary">Directive Overview</h2>\
+        <span class="text-xs uppercase tracking-label text-outline font-bold">Last sync: \u2014</span>\
+      </div>\
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">\
+        <div class="p-6 bg-surface-container rounded-xl flex flex-col justify-between h-40 hover:bg-surface-container-highest transition-colors cursor-default">\
+          <div class="flex justify-between items-start">\
+            <span class="material-symbols-outlined text-primary text-3xl">compare</span>\
+            <span class="text-secondary font-bold text-sm bg-secondary-container px-2 py-1 rounded-xl">\u2014</span>\
+          </div>\
+          <div>\
+            <p class="text-4xl font-black text-primary">\u2014</p>\
+            <p class="text-[10px] uppercase tracking-widest font-bold text-outline">Pending Comparisons</p>\
+          </div>\
+        </div>\
+        <div class="p-6 bg-primary text-on-primary rounded-xl flex flex-col justify-between h-40 shadow-ambient-lg">\
+          <div class="flex justify-between items-start">\
+            <span class="material-symbols-outlined text-on-primary/80 text-3xl">warning</span>\
+            <span class="text-on-primary font-bold text-sm bg-white/10 px-2 py-1 rounded-xl">Critical</span>\
+          </div>\
+          <div>\
+            <p class="text-4xl font-black">\u2014</p>\
+            <p class="text-[10px] uppercase tracking-widest font-bold text-on-primary/70">Recent Gaps Found</p>\
+          </div>\
+        </div>\
+        <div class="p-6 bg-surface-container rounded-xl flex flex-col justify-between h-40 hover:bg-surface-container-highest transition-colors cursor-default">\
+          <div class="flex justify-between items-start">\
+            <span class="material-symbols-outlined text-primary text-3xl">edit_note</span>\
+          </div>\
+          <div>\
+            <p class="text-4xl font-black text-primary">\u2014</p>\
+            <p class="text-[10px] uppercase tracking-widest font-bold text-outline">In-Progress Edits</p>\
+          </div>\
+        </div>\
+        <div class="p-6 bg-surface-container-low rounded-xl flex flex-col justify-between h-40">\
+          <div class="flex justify-between items-start">\
+            <span class="material-symbols-outlined text-primary text-3xl">verified</span>\
+          </div>\
+          <div>\
+            <p class="text-4xl font-black text-primary">\u2014</p>\
+            <p class="text-[10px] uppercase tracking-widest font-bold text-outline">Total Validated</p>\
+          </div>\
+        </div>\
+      </div>\
+    </section>\
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">\
+      <section class="lg:col-span-8 space-y-6">\
+        <div class="flex items-center justify-between">\
+          <h3 class="text-xl font-bold text-primary">Recent Documents</h3>\
+          <div class="flex bg-surface-container-low p-1 rounded-full">\
+            <button class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-surface-container-lowest shadow-sm rounded-full">All Sources</button>\
+            <button class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline">DOE Only</button>\
+            <button class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline">NETL Only</button>\
+          </div>\
+        </div>\
+        <div class="space-y-4" id="dashboard-documents">\
+          <div class="p-6 bg-surface-container-lowest rounded-xl text-center text-outline">\
+            <span class="material-symbols-outlined text-4xl mb-2 block">folder_open</span>\
+            <p class="font-semibold">No documents yet</p>\
+            <p class="text-sm mt-1">Upload your first pair of directives to get started.</p>\
+            <a href="#/compare" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">Start Comparison</a>\
+          </div>\
+        </div>\
+      </section>\
+      <section class="lg:col-span-4 space-y-8">\
+        <div class="bg-surface-container-highest rounded-2xl p-8 relative overflow-hidden">\
+          <div class="relative z-10">\
+            <h3 class="text-xl font-black text-primary mb-2">Review Velocity</h3>\
+            <p class="text-sm text-on-surface-variant mb-6 leading-body">Comparison completion rate data will appear here as you review directives.</p>\
+            <div class="flex items-end gap-2 h-24 mb-6">\
+              <div class="w-full bg-primary/10 rounded-t h-8"></div>\
+              <div class="w-full bg-primary/15 rounded-t h-12"></div>\
+              <div class="w-full bg-primary/10 rounded-t h-10"></div>\
+              <div class="w-full bg-primary/20 rounded-t h-16"></div>\
+              <div class="w-full bg-primary/10 rounded-t h-6"></div>\
+              <div class="w-full bg-primary/25 rounded-t h-20"></div>\
+              <div class="w-full bg-primary/15 rounded-t h-14"></div>\
+            </div>\
+            <button class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">\
+              View Full Analytics\
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>\
+            </button>\
+          </div>\
+          <div class="absolute -right-12 -top-12 w-48 h-48 bg-secondary/10 rounded-full blur-3xl"></div>\
+        </div>\
+        <div class="rounded-2xl overflow-hidden h-56 relative bg-gradient-to-br from-primary to-primary-container flex flex-col justify-end p-6">\
+          <span class="text-[10px] font-black uppercase tracking-[0.3em] text-on-primary/60 mb-2">Featured Collection</span>\
+          <h4 class="text-on-primary font-bold text-xl leading-tight">National Energy Policy Directives</h4>\
+        </div>\
+      </section>\
+    </div>\
+  </div>';
+}
+
+// ── VIEW: DIRECTIVES LIBRARY (Placeholder) ──
+function renderLibrary(container) {
+  container.innerHTML = '\
+  <div class="p-8 space-y-8">\
+    <div class="flex items-center justify-between">\
+      <div>\
+        <h2 class="text-3xl font-black tracking-headline text-primary">Directives Library</h2>\
+        <p class="text-sm text-on-surface-variant mt-1 leading-body">Browse, search, and select directives for comparison analysis.</p>\
+      </div>\
+      <div class="flex gap-3">\
+        <button class="px-4 py-2 bg-surface-container-highest rounded-xl text-sm font-bold text-primary ghost-border hover:bg-surface-container transition-colors">\
+          <span class="material-symbols-outlined text-sm align-middle mr-1">filter_list</span> Advanced Filters\
+        </button>\
+        <button class="px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity" disabled>\
+          Compare Selected (0)\
+        </button>\
+      </div>\
+    </div>\
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">\
+      <select class="bg-surface-container-highest rounded-xl px-4 py-2 text-sm ghost-border focus:ring-2 focus:ring-primary"><option>All Departments</option></select>\
+      <div class="flex bg-surface-container-low p-1 rounded-full">\
+        <button class="flex-1 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-surface-container-lowest shadow-sm rounded-full">All</button>\
+        <button class="flex-1 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline">DOE</button>\
+        <button class="flex-1 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline">NETL</button>\
+      </div>\
+      <select class="bg-surface-container-highest rounded-xl px-4 py-2 text-sm ghost-border focus:ring-2 focus:ring-primary"><option>Current Only</option><option>Draft</option><option>Archived</option></select>\
+      <select class="bg-surface-container-highest rounded-xl px-4 py-2 text-sm ghost-border focus:ring-2 focus:ring-primary"><option>Last Updated</option><option>Alphabetical</option></select>\
+    </div>\
+    <div class="p-12 bg-surface-container-lowest rounded-xl text-center text-outline">\
+      <span class="material-symbols-outlined text-5xl mb-3 block">library_books</span>\
+      <p class="font-bold text-lg text-primary">No directives cataloged yet</p>\
+      <p class="text-sm mt-2 leading-body">Directives will appear here after you run your first comparison.</p>\
+      <a href="#/compare" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">Upload Directives</a>\
+    </div>\
+  </div>';
+}
+
+// ── VIEW: COMPARISON TOOL — Upload ──
+function renderCompareUpload(container) {
+  container.innerHTML = '\
+  <div class="p-8 max-w-4xl mx-auto space-y-8">\
+    <div>\
+      <h2 class="text-3xl font-black tracking-headline text-primary">Comparison Tool</h2>\
+      <p class="text-sm text-on-surface-variant mt-1 leading-body">Upload a DOE order and its corresponding NETL directive to check alignment.</p>\
+    </div>\
+    <div id="upload-section" class="bg-surface-container-lowest rounded-xl p-8 ghost-border space-y-6">\
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">\
+        <div>\
+          <label class="block font-bold text-sm text-primary mb-2">DOE Order <span class="font-normal text-outline text-xs">(parent directive)</span></label>\
+          <div class="drop-zone border-2 border-dashed border-outline-variant/30 rounded-xl p-8 text-center cursor-pointer relative hover:border-primary/40 transition-colors" id="doe-drop">\
+            <input type="file" id="doe-file" accept=".pdf" class="absolute inset-0 opacity-0 cursor-pointer">\
+            <span class="material-symbols-outlined text-3xl text-outline block mb-2">upload_file</span>\
+            <p class="text-sm text-outline hint">Drop PDF here or click to browse</p>\
+          </div>\
+        </div>\
+        <div>\
+          <label class="block font-bold text-sm text-primary mb-2">NETL Order <span class="font-normal text-outline text-xs">(site implementation)</span></label>\
+          <div class="drop-zone border-2 border-dashed border-outline-variant/30 rounded-xl p-8 text-center cursor-pointer relative hover:border-primary/40 transition-colors" id="netl-drop">\
+            <input type="file" id="netl-file" accept=".pdf" class="absolute inset-0 opacity-0 cursor-pointer">\
+            <span class="material-symbols-outlined text-3xl text-outline block mb-2">upload_file</span>\
+            <p class="text-sm text-outline hint">Drop PDF here or click to browse</p>\
+          </div>\
+        </div>\
+      </div>\
+      <button id="submit-btn" disabled class="w-full py-3 bg-primary text-on-primary font-bold text-sm uppercase tracking-widest rounded-xl hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">\
+        Compare Directives\
+      </button>\
+    </div>\
+    <div id="progress-section" class="hidden bg-surface-container-lowest rounded-xl p-8 ghost-border space-y-4">\
+      <div class="text-center"><p class="text-2xl font-black text-primary" id="progress-pct">0%</p></div>\
+      <div class="h-3 bg-surface-container-highest rounded-full overflow-hidden">\
+        <div class="h-full progress-gradient rounded-full transition-all duration-500 ease-out" id="progress-fill" style="width: 0%"></div>\
+      </div>\
+      <div id="progress-log" class="max-h-60 overflow-y-auto font-mono text-xs leading-relaxed text-on-surface-variant space-y-1 mt-4"></div>\
+    </div>\
+    <div id="results-section" class="hidden"></div>\
+  </div>';
+
+  initUploadLogic();
+}
+
+// ── VIEW: COMPARISON JOB (3-panel workspace) ──
+function renderCompareJob(container, jobId) {
+  container.innerHTML = '\
+  <div class="flex flex-col h-[calc(100vh-64px)]">\
+    <!-- Utility Bar -->\
+    <div class="px-8 py-3 bg-surface-container-low flex items-center justify-between shrink-0">\
+      <div class="flex items-center gap-4">\
+        <a href="#/history" class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">arrow_back</span></a>\
+        <span class="px-3 py-1.5 bg-surface-container-lowest rounded-xl shadow-sm text-sm font-semibold">\
+          Job: <span class="font-mono text-outline">' + escapeHtml(jobId) + '</span>\
+        </span>\
+        <div class="h-4 w-[1px] bg-outline/20"></div>\
+        <div class="flex items-center gap-2">\
+          <span class="material-symbols-outlined text-primary text-xl">sync</span>\
+          <span class="text-xs font-medium text-on-surface-variant">Report Loaded</span>\
+        </div>\
+      </div>\
+      <div class="flex items-center gap-3">\
+        <button class="px-4 py-2 text-sm font-bold text-primary hover:bg-surface-container-highest rounded-xl transition-colors flex items-center gap-2">\
+          <span class="material-symbols-outlined text-sm">file_download</span> Export PDF\
+        </button>\
+        <a href="#/gaps/' + escapeHtml(jobId) + '" class="px-5 py-2 text-sm font-bold bg-primary text-on-primary rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2">\
+          <span class="material-symbols-outlined text-sm">analytics</span> Gap Analysis\
+        </a>\
+      </div>\
+    </div>\
+    <!-- 3-Panel Comparison Workspace -->\
+    <div class="flex-1 flex overflow-hidden">\
+      <!-- Left Panel: DOE Order -->\
+      <section id="doe-panel" class="flex-1 flex flex-col bg-surface" style="border-right: 1px solid rgba(196,198,209,0.1);">\
+        <div class="p-6 pb-2 shrink-0">\
+          <div class="flex items-center justify-between mb-2">\
+            <span class="px-2 py-0.5 bg-tertiary-container text-on-tertiary-container text-[10px] font-black uppercase rounded tracking-widest">DOE Source</span>\
+            <span class="text-xs font-medium text-outline" id="doe-version"></span>\
+          </div>\
+          <h2 class="text-lg font-extrabold tracking-tight text-primary" id="doe-title">Loading...</h2>\
+          <p class="text-sm text-on-surface-variant mt-1" id="doe-subtitle"></p>\
+        </div>\
+        <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4 hide-scrollbar" id="doe-sections-list">\
+          ' + skeletonBlock('h-24', 'w-full') + skeletonBlock('h-24', 'w-full') + '\
+        </div>\
+      </section>\
+      <!-- Middle Panel: NETL Directive -->\
+      <section id="netl-panel" class="flex-1 flex flex-col bg-surface-container">\
+        <div class="p-6 pb-2 shrink-0">\
+          <div class="flex items-center justify-between mb-2">\
+            <span class="px-2 py-0.5 bg-primary text-on-primary text-[10px] font-black uppercase rounded tracking-widest">NETL Directive</span>\
+            <span class="text-xs font-medium text-outline" id="netl-version"></span>\
+          </div>\
+          <h2 class="text-lg font-extrabold tracking-tight text-primary" id="netl-title">Loading...</h2>\
+          <p class="text-sm text-on-surface-variant mt-1" id="netl-subtitle"></p>\
+        </div>\
+        <div class="flex-1 overflow-y-auto px-6 py-4 space-y-4 hide-scrollbar" id="netl-sections-list">\
+          ' + skeletonBlock('h-24', 'w-full') + skeletonBlock('h-24', 'w-full') + '\
+        </div>\
+      </section>\
+      <!-- Right Panel: Gap Analysis Sidebar -->\
+      <aside id="gaps-panel" class="w-80 flex flex-col bg-surface-container-low shadow-[-10px_0_30px_rgba(0,0,0,0.02)] shrink-0">\
+        <div class="p-6">\
+          <div class="flex items-center gap-2 mb-4">\
+            <span class="material-symbols-outlined text-primary">analytics</span>\
+            <h2 class="font-black text-primary uppercase text-xs tracking-widest">Gap Analysis</h2>\
+          </div>\
+          <div class="grid grid-cols-2 gap-3 mb-6">\
+            <div class="bg-surface-container-highest p-4 rounded-xl text-center">\
+              <p class="text-[10px] font-black uppercase text-outline mb-1">Discrepancies</p>\
+              <p class="text-2xl font-black text-yellow-600" id="gap-discrepancies">\u2014</p>\
+            </div>\
+            <div class="bg-surface-container-highest p-4 rounded-xl text-center">\
+              <p class="text-[10px] font-black uppercase text-outline mb-1">Critical Gaps</p>\
+              <p class="text-2xl font-black text-error" id="gap-critical">\u2014</p>\
+            </div>\
+          </div>\
+          <div class="space-y-3 overflow-y-auto max-h-[calc(100vh-420px)] hide-scrollbar" id="gap-issues-list">\
+            ' + skeletonBlock('h-20', 'w-full') + '\
+          </div>\
+        </div>\
+        <div class="mt-auto p-6 bg-surface-container-highest/50">\
+          <div class="p-4 bg-secondary-container/20 rounded-xl border border-secondary-container">\
+            <div class="flex items-center gap-2 mb-2">\
+              <span class="material-symbols-outlined text-secondary">check_circle</span>\
+              <span class="text-xs font-bold text-secondary uppercase tracking-widest">Alignment Score</span>\
+            </div>\
+            <div class="w-full bg-surface-container rounded-full h-1.5 mb-2">\
+              <div class="bg-secondary h-1.5 rounded-full transition-all duration-700" id="alignment-bar" style="width: 0%"></div>\
+            </div>\
+            <p class="text-[10px] text-on-secondary-container font-medium" id="alignment-label">\u2014</p>\
+          </div>\
+        </div>\
+      </aside>\
+    </div>\
+    <!-- Floating Comparison Toolbar -->\
+    <div class="fixed bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-1 p-1 glass-panel rounded-2xl shadow-ambient-lg ghost-border z-50">\
+      <button class="px-4 py-3 rounded-xl bg-primary text-on-primary flex items-center gap-3 shadow-lg hover:opacity-90 transition-opacity">\
+        <span class="material-symbols-outlined">auto_awesome</span>\
+        <span class="text-sm font-bold tracking-tight">AI Reconciliation</span>\
+      </button>\
+      <div class="h-8 w-[1px] bg-outline/20 mx-2"></div>\
+      <button class="p-3 rounded-xl text-primary hover:bg-surface-container-highest transition-colors" title="Notes">\
+        <span class="material-symbols-outlined">notes</span>\
+      </button>\
+      <button class="p-3 rounded-xl text-primary hover:bg-surface-container-highest transition-colors" title="Share">\
+        <span class="material-symbols-outlined">share</span>\
+      </button>\
+      <button class="p-3 rounded-xl text-primary hover:bg-surface-container-highest transition-colors" title="History">\
+        <span class="material-symbols-outlined">history_edu</span>\
+      </button>\
+    </div>\
+  </div>';
+
+  // Hide the main FAB toolbar when in comparison view
+  var fab = document.getElementById('fab-toolbar');
+  if (fab) fab.style.display = 'none';
+
+  loadComparisonData(jobId);
+}
+
+function loadComparisonData(jobId) {
+  var sectionsUrl = '/api/report/' + encodeURIComponent(jobId) + '/sections';
+  var gapsUrl = '/api/report/' + encodeURIComponent(jobId) + '/gaps';
+
+  Promise.all([
+    fetch(sectionsUrl).then(function(r) { return r.ok ? r.json() : null; }),
+    fetch(gapsUrl).then(function(r) { return r.ok ? r.json() : null; }),
+  ]).then(function(results) {
+    var sections = results[0];
+    var gaps = results[1];
+
+    if (!sections || !gaps) {
+      // Fall back to simple report view
+      fetchAndRenderReportFallback(jobId);
       return;
     }
-    const { job_id } = await res.json();
-    listenProgress(job_id);
-  } catch (e) {
-    alert('Upload error: ' + e.message);
-    document.getElementById('upload-section').style.display = 'block';
-    document.getElementById('progress-section').style.display = 'none';
+
+    renderSectionsPanel(sections);
+    renderGapsPanel(gaps);
+  }).catch(function() {
+    fetchAndRenderReportFallback(jobId);
+  });
+}
+
+function renderSectionsPanel(data) {
+  // DOE header
+  var doeTitle = document.getElementById('doe-title');
+  var doeSubtitle = document.getElementById('doe-subtitle');
+  if (doeTitle) doeTitle.textContent = data.doe_directive_id || 'DOE Order';
+  if (doeSubtitle) doeSubtitle.textContent = 'Source directive';
+
+  // NETL header
+  var netlTitle = document.getElementById('netl-title');
+  var netlSubtitle = document.getElementById('netl-subtitle');
+  if (netlTitle) netlTitle.textContent = data.netl_directive_id || 'NETL Directive';
+  if (netlSubtitle) netlSubtitle.textContent = 'Site implementation';
+
+  // DOE Sections
+  var doeList = document.getElementById('doe-sections-list');
+  if (doeList) {
+    var html = '';
+    var doeSections = data.doe_sections || [];
+    for (var i = 0; i < doeSections.length; i++) {
+      var s = doeSections[i];
+      var hasFindings = s.findings && s.findings.length > 0;
+      var findingStatus = hasFindings ? s.findings[0].status : '';
+      var isError = findingStatus === 'missing_from_netl' || findingStatus === 'misaligned';
+
+      if (isError) {
+        html += '<article class="p-5 rounded-xl bg-surface-container-highest border-l-4 border-error/40 relative" data-section-id="' + escapeHtml(s.id) + '">';
+        html += '<div class="absolute -left-3 top-5 bg-error text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold">' + s.id + '</div>';
+      } else {
+        html += '<article class="p-5 rounded-xl bg-surface-container-low/50" data-section-id="' + escapeHtml(s.id) + '">';
+      }
+
+      html += '<h3 class="text-xs font-bold uppercase tracking-widest text-primary mb-3">' + escapeHtml(s.id) + '. ' + escapeHtml(s.heading) + '</h3>';
+      html += '<p class="text-sm leading-relaxed text-on-surface-variant">' + escapeHtml(s.content) + '</p>';
+
+      if (hasFindings) {
+        html += '<p class="text-[10px] text-error/70 mt-2 font-semibold">' + escapeHtml(s.findings[0].detail) + '</p>';
+      }
+
+      html += '</article>';
+    }
+    html += '<div class="h-32"></div>';
+    doeList.innerHTML = html;
   }
-});
 
-// --- SSE progress ---
+  // NETL Sections
+  var netlList = document.getElementById('netl-sections-list');
+  if (netlList) {
+    var nhtml = '';
+    var netlSections = data.netl_sections || [];
+    for (var j = 0; j < netlSections.length; j++) {
+      var ns = netlSections[j];
+      var nHasFindings = ns.findings && ns.findings.length > 0;
+      var nStatus = nHasFindings ? ns.findings[0].status : '';
+
+      if (ns.content === 'NOT ADDRESSED') {
+        // Missing section placeholder
+        nhtml += '<article class="p-5 rounded-xl border-2 border-dashed border-error/30 bg-error-container/10 flex flex-col items-center justify-center py-10">';
+        nhtml += '<span class="material-symbols-outlined text-error opacity-40 mb-2">error_outline</span>';
+        nhtml += '<p class="text-xs font-bold text-error/60 uppercase tracking-tighter text-center">Missing Corresponding Section</p>';
+        nhtml += '<p class="text-[10px] text-on-surface-variant mt-1 text-center">No "' + escapeHtml(ns.heading) + '" section found in NETL directive.</p>';
+        nhtml += '<button class="mt-4 px-3 py-1.5 bg-error text-on-error text-[10px] font-bold rounded uppercase" onclick="requestSuggestion(\'' + escapeHtml(ns.id) + '\')">Auto-Generate Section</button>';
+        nhtml += '</article>';
+      } else if (nStatus === 'misaligned') {
+        nhtml += '<article class="p-5 rounded-xl bg-[#fff9c4]/30 border-l-4 border-yellow-500 relative" data-section-id="' + escapeHtml(ns.id) + '">';
+        nhtml += '<div class="absolute -left-3 top-5 bg-yellow-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold">' + ns.id + '</div>';
+        nhtml += '<h3 class="text-xs font-bold uppercase tracking-widest text-primary mb-3">Section ' + escapeHtml(ns.id) + ': ' + escapeHtml(ns.heading) + '</h3>';
+        nhtml += '<p class="text-sm leading-relaxed text-on-surface-variant">' + escapeHtml(ns.content) + '</p>';
+        if (nHasFindings) {
+          nhtml += '<div class="mt-3 flex items-center gap-2 text-[10px] font-bold text-yellow-700 uppercase bg-yellow-500/10 p-2 rounded">';
+          nhtml += '<span class="material-symbols-outlined text-xs">warning</span> ' + escapeHtml(ns.findings[0].detail);
+          nhtml += '</div>';
+        }
+        nhtml += '</article>';
+      } else if (nStatus === 'netl_only') {
+        nhtml += '<article class="p-5 rounded-xl bg-primary-fixed/30 border-l-4 border-primary" data-section-id="' + escapeHtml(ns.id) + '">';
+        nhtml += '<h3 class="text-xs font-bold uppercase tracking-widest text-primary mb-3">Section ' + escapeHtml(ns.id) + ': ' + escapeHtml(ns.heading) + '</h3>';
+        nhtml += '<p class="text-sm leading-relaxed text-on-surface-variant">' + escapeHtml(ns.content) + '</p>';
+        nhtml += '<span class="text-[10px] text-primary font-bold uppercase mt-2 block">NETL Only</span>';
+        nhtml += '</article>';
+      } else {
+        nhtml += '<article class="p-5 rounded-xl bg-surface-container-lowest shadow-sm" data-section-id="' + escapeHtml(ns.id) + '">';
+        nhtml += '<h3 class="text-xs font-bold uppercase tracking-widest text-primary mb-3">Section ' + escapeHtml(ns.id) + ': ' + escapeHtml(ns.heading) + '</h3>';
+        nhtml += '<p class="text-sm leading-relaxed text-on-surface-variant">' + escapeHtml(ns.content) + '</p>';
+        nhtml += '</article>';
+      }
+    }
+    nhtml += '<div class="h-32"></div>';
+    netlList.innerHTML = nhtml;
+  }
+}
+
+function renderGapsPanel(data) {
+  // Metrics
+  var discEl = document.getElementById('gap-discrepancies');
+  var critEl = document.getElementById('gap-critical');
+  if (discEl) discEl.textContent = String(data.discrepancies || 0).padStart(2, '0');
+  if (critEl) critEl.textContent = String(data.critical_gaps || 0).padStart(2, '0');
+
+  // Alignment score
+  var barEl = document.getElementById('alignment-bar');
+  var labelEl = document.getElementById('alignment-label');
+  var pct = data.alignment_pct || 0;
+  if (barEl) barEl.style.width = pct + '%';
+  if (labelEl) labelEl.textContent = pct + '% alignment with parent DOE directive.';
+
+  // Issue cards
+  var issuesList = document.getElementById('gap-issues-list');
+  if (issuesList) {
+    var issues = data.issues || [];
+    if (!issues.length) {
+      issuesList.innerHTML = '<p class="text-sm text-outline text-center py-4">No issues found.</p>';
+      return;
+    }
+
+    var html = '';
+    for (var i = 0; i < issues.length; i++) {
+      var issue = issues[i];
+      var typeColor = issue.type === 'conflict' ? 'text-yellow-600' : 'text-error';
+      var typeLabel = issue.type === 'conflict' ? 'Conflict' : issue.type === 'missing' ? 'Missing Info' : issue.type === 'outdated' ? 'Outdated' : 'Info';
+      var borderColor = issue.type === 'conflict' ? 'border-yellow-500/20' : 'border-error/20';
+
+      html += '<div class="p-4 bg-surface rounded-xl shadow-sm border ' + borderColor + '">';
+      html += '<div class="flex justify-between items-start mb-2">';
+      html += '<span class="text-[10px] font-bold ' + typeColor + ' uppercase">' + escapeHtml(typeLabel) + '</span>';
+      html += '<span class="text-[10px] text-outline">Ref: ' + escapeHtml(issue.ref || '') + '</span>';
+      html += '</div>';
+      html += '<p class="text-xs font-semibold text-on-surface leading-tight">' + escapeHtml(issue.title) + '</p>';
+      html += '<p class="text-[10px] text-on-surface-variant mt-1">' + escapeHtml((issue.description || '').substring(0, 150)) + '</p>';
+      html += '<div class="mt-3 flex gap-2">';
+      html += '<button class="flex-1 py-2 bg-primary text-on-primary text-[10px] font-bold rounded hover:opacity-90 transition-opacity" onclick="requestSuggestionForGap(\'' + escapeHtml(issue.id) + '\')">SUGGEST EDIT</button>';
+      html += '<button class="p-2 bg-surface-container-highest text-primary rounded"><span class="material-symbols-outlined text-xs">flag</span></button>';
+      html += '</div>';
+      html += '</div>';
+    }
+    issuesList.innerHTML = html;
+  }
+}
+
+function requestSuggestion(sectionId) {
+  showToast('Generating suggestion for section ' + sectionId + '...', 'info');
+}
+
+function requestSuggestionForGap(gapId) {
+  if (!AppState.activeJob) {
+    // Try to extract from URL
+    var m = window.location.hash.match(/^#\/compare\/([a-f0-9]+)$/);
+    if (m) AppState.activeJob = m[1];
+  }
+  if (!AppState.activeJob) {
+    showToast('No active job found.', 'error');
+    return;
+  }
+
+  showToast('Generating AI suggestion...', 'info');
+
+  fetch('/api/report/' + encodeURIComponent(AppState.activeJob) + '/suggest', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ gap_id: gapId, context: '' }),
+  })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.suggested_text) {
+        showSuggestionModal(data.suggested_text, data.rationale);
+      } else {
+        showToast(data.rationale || 'No suggestion generated.', 'error');
+      }
+    })
+    .catch(function(e) {
+      showToast('Error: ' + e.message, 'error');
+    });
+}
+
+function showSuggestionModal(text, rationale) {
+  var overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-black/30 backdrop-blur-sm';
+  overlay.innerHTML = '\
+    <div class="bg-surface rounded-2xl shadow-ambient-lg p-8 max-w-xl w-full mx-4 space-y-4">\
+      <div class="flex items-center gap-2">\
+        <span class="material-symbols-outlined text-primary">auto_awesome</span>\
+        <h3 class="font-bold text-primary text-lg">AI Suggestion</h3>\
+      </div>\
+      <div class="bg-surface-container-low rounded-xl p-4 text-sm leading-body text-on-surface-variant">' + escapeHtml(text) + '</div>\
+      <p class="text-xs text-outline"><strong>Rationale:</strong> ' + escapeHtml(rationale) + '</p>\
+      <div class="flex gap-3 justify-end">\
+        <button class="px-4 py-2 text-sm font-bold text-outline ghost-border rounded-xl hover:bg-surface-container transition-colors" id="dismiss-suggestion">Dismiss</button>\
+        <button class="px-4 py-2 text-sm font-bold bg-primary text-on-primary rounded-xl hover:opacity-90 transition-opacity" id="apply-suggestion">Apply Change</button>\
+      </div>\
+    </div>';
+
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('#dismiss-suggestion').addEventListener('click', function() { overlay.remove(); });
+  overlay.querySelector('#apply-suggestion').addEventListener('click', function() {
+    showToast('Suggestion applied (saved to draft).', 'success');
+    overlay.remove();
+  });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+}
+
+function fetchAndRenderReportFallback(jobId) {
+  // Fallback: render the old single-panel report view inside the DOE panel area
+  var doeList = document.getElementById('doe-sections-list');
+  var netlList = document.getElementById('netl-sections-list');
+  var gapsList = document.getElementById('gap-issues-list');
+
+  fetch('/api/report/' + encodeURIComponent(jobId))
+    .then(function(res) { return res.ok ? res.json() : null; })
+    .then(function(data) {
+      if (!data || data.status !== 'done') {
+        if (doeList) doeList.innerHTML = '<div class="p-6 bg-error-container rounded-xl text-on-error-container">Report not found or still running.</div>';
+        return;
+      }
+      if (doeList) doeList.innerHTML = buildReportHTML(data.report);
+      if (netlList) netlList.innerHTML = '<div class="p-6 text-center text-outline"><p class="text-sm">Section-by-section data not available for this report.</p><p class="text-xs mt-2">Re-run the comparison to get detailed section mapping.</p></div>';
+      if (gapsList) gapsList.innerHTML = '';
+    })
+    .catch(function(e) {
+      if (doeList) doeList.innerHTML = '<div class="p-6 bg-error-container rounded-xl text-on-error-container">Error: ' + escapeHtml(e.message) + '</div>';
+    });
+}
+
+function buildReportHTML(report) {
+  var needsUpdate = report.needs_update || 'uncertain';
+  var confidence = report.confidence || 'unknown';
+
+  var verdictColors = {
+    yes: 'bg-error/10 text-error border-error',
+    no: 'bg-secondary/10 text-secondary border-secondary',
+    uncertain: 'bg-surface-container-highest text-outline border-outline',
+  };
+  var verdictLabel = { yes: 'Update Needed', no: 'Up to Date', uncertain: 'Uncertain' };
+
+  var html = '<div class="bg-surface-container-lowest rounded-xl p-6 flex items-center gap-6 ghost-border">' +
+    '<div class="w-20 h-20 rounded-full border-2 flex items-center justify-center font-black text-xs text-center leading-tight ' + (verdictColors[needsUpdate] || verdictColors.uncertain) + '">' +
+      (verdictLabel[needsUpdate] || 'Uncertain') +
+    '</div>' +
+    '<div class="flex-1">' +
+      '<h3 class="text-lg font-bold text-primary mb-1">Comparison Result' +
+        '<span class="text-xs font-normal bg-surface-container-highest px-2 py-1 rounded-xl ml-2 text-outline">Confidence: ' + escapeHtml(confidence) + '</span>' +
+      '</h3>' +
+      '<p class="text-sm text-on-surface-variant leading-body">' + escapeHtml(report.summary || '') + '</p>' +
+      '<div class="text-xs mt-2 text-outline space-x-6">' +
+        '<span>DOE: <strong class="text-primary">' + escapeHtml(report.doe_directive_id || '') + '</strong></span>' +
+        '<span>NETL: <strong class="text-primary">' + escapeHtml(report.netl_directive_id || '') + '</strong></span>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  // Section-by-section findings
+  var sections = report.section_by_section || [];
+  if (sections.length) {
+    var statusColors = {
+      aligned: 'bg-secondary/10 text-secondary',
+      misaligned: 'bg-error/10 text-error',
+      missing_from_netl: 'bg-error-container text-on-error-container',
+      outdated: 'bg-surface-container-highest text-outline',
+      netl_only: 'bg-primary-fixed text-primary',
+    };
+    var borderColors = {
+      aligned: '#466800',
+      misaligned: '#ba1a1a',
+    };
+    html += '<div class="bg-surface-container-lowest rounded-xl p-6 ghost-border">' +
+      '<h3 class="text-base font-bold text-primary mb-4">Section-by-Section Findings <span class="text-xs font-normal bg-surface-container-highest px-2 py-1 rounded-xl ml-1">' + sections.length + '</span></h3>';
+    for (var i = 0; i < sections.length; i++) {
+      var s = sections[i];
+      var sc = s.status || 'misaligned';
+      html += '<div class="pl-4 py-3 mb-3 rounded-xl bg-surface-container" style="border-left: 3px solid ' + (borderColors[sc] || '#747781') + '">' +
+        '<p class="font-semibold text-sm text-primary">' + escapeHtml(s.topic || '') +
+          '<span class="ml-2 px-2 py-0.5 text-[10px] font-bold uppercase rounded-xl ' + (statusColors[sc] || '') + '">' + (sc || '').replace(/_/g, ' ') + '</span>' +
+        '</p>' +
+        '<p class="text-xs text-on-surface-variant mt-1 leading-body">' + escapeHtml(s.detail || '') + '</p>' +
+      '</div>';
+    }
+    html += '</div>';
+  }
+
+  // Missing requirements
+  var missing = report.missing_requirements || [];
+  if (missing.length) {
+    html += '<div class="bg-surface-container-lowest rounded-xl p-6 ghost-border">' +
+      '<h3 class="text-base font-bold text-primary mb-4">Missing Requirements <span class="text-xs font-normal bg-surface-container-highest px-2 py-1 rounded-xl ml-1">' + missing.length + '</span></h3>';
+    for (var j = 0; j < missing.length; j++) {
+      var m = missing[j];
+      html += '<div class="pl-4 py-3 mb-3 rounded-xl bg-error-container/20" style="border-left: 3px solid #ba1a1a">' +
+        '<p class="font-semibold text-sm text-primary">' + escapeHtml(m.doe_requirement || '') + '</p>' +
+        '<p class="text-xs text-on-surface-variant mt-1 leading-body">' + escapeHtml(m.detail || '') + '</p>' +
+      '</div>';
+    }
+    html += '</div>';
+  }
+
+  // Recommendations
+  var recs = report.recommendations || [];
+  if (recs.length) {
+    var prioColors = { high: '#ba1a1a', medium: '#747781', low: '#466800' };
+    html += '<div class="bg-surface-container-lowest rounded-xl p-6 ghost-border">' +
+      '<h3 class="text-base font-bold text-primary mb-4">Recommendations <span class="text-xs font-normal bg-surface-container-highest px-2 py-1 rounded-xl ml-1">' + recs.length + '</span></h3>';
+    for (var k = 0; k < recs.length; k++) {
+      var r = recs[k];
+      var p = r.priority || 'medium';
+      html += '<div class="pl-4 py-3 mb-3 rounded-xl bg-surface-container" style="border-left: 3px solid ' + (prioColors[p] || '#747781') + '">' +
+        '<p class="font-semibold text-sm text-primary">' + escapeHtml(r.section || '') +
+          '<span class="ml-2 px-2 py-0.5 text-[10px] font-bold uppercase rounded-xl bg-surface-container-highest text-outline">' + p + '</span>' +
+        '</p>' +
+        '<p class="text-xs text-on-surface-variant mt-1 leading-body">' + escapeHtml(r.action || '') + '</p>' +
+      '</div>';
+    }
+    html += '</div>';
+  }
+
+  html += '<a href="#/compare" class="inline-block px-6 py-2 bg-surface-container-highest text-primary rounded-xl text-sm font-bold hover:bg-surface-container transition-colors ghost-border">New Comparison</a>';
+  return html;
+}
+
+// ── VIEW: GAP ANALYSIS ──
+function renderGaps(container, jobId) {
+  container.innerHTML = '\
+  <div class="p-8 space-y-6">\
+    <div class="flex items-center gap-3">\
+      <a href="#/history" class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">arrow_back</span></a>\
+      <h2 class="text-2xl font-black tracking-headline text-primary">Gap Analysis</h2>\
+      <span class="px-3 py-1 bg-surface-container-highest rounded-xl text-xs font-mono text-outline">' + escapeHtml(jobId) + '</span>\
+    </div>\
+    <div class="p-12 bg-surface-container-lowest rounded-xl text-center text-outline ghost-border">\
+      <span class="material-symbols-outlined text-5xl mb-3 block">analytics</span>\
+      <p class="font-bold text-lg text-primary">Gap Analysis View</p>\
+      <p class="text-sm mt-2 leading-body">Detailed gap analysis and editing tools will be available in a future update.</p>\
+      <a href="#/compare/' + escapeHtml(jobId) + '" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">View Comparison Report</a>\
+    </div>\
+  </div>';
+}
+
+function renderGapsEmpty(container) {
+  container.innerHTML = '\
+  <div class="p-8 space-y-6">\
+    <h2 class="text-3xl font-black tracking-headline text-primary">Gap Analysis</h2>\
+    <div class="p-12 bg-surface-container-lowest rounded-xl text-center text-outline ghost-border">\
+      <span class="material-symbols-outlined text-5xl mb-3 block">analytics</span>\
+      <p class="font-bold text-lg text-primary">No analysis selected</p>\
+      <p class="text-sm mt-2 leading-body">Run a comparison first, then navigate here to analyze gaps in detail.</p>\
+      <a href="#/compare" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">Start Comparison</a>\
+    </div>\
+  </div>';
+}
+
+// ── VIEW: HISTORY ──
+function renderHistory(container) {
+  container.innerHTML = '\
+  <div class="p-8 space-y-8">\
+    <h2 class="text-3xl font-black tracking-headline text-primary">Comparison History</h2>\
+    <p class="text-sm text-on-surface-variant leading-body">Review past directive comparisons and their results.</p>\
+    <div id="history-list" class="space-y-4">\
+      <div class="p-12 bg-surface-container-lowest rounded-xl text-center text-outline ghost-border">\
+        <span class="material-symbols-outlined text-5xl mb-3 block">history</span>\
+        <p class="font-bold text-lg text-primary">No comparisons yet</p>\
+        <p class="text-sm mt-2 leading-body">Your completed comparisons will appear here.</p>\
+        <a href="#/compare" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">Start First Comparison</a>\
+      </div>\
+    </div>\
+  </div>';
+
+  loadHistory();
+}
+
+function loadHistory() {
+  var target = document.getElementById('history-list');
+  if (!target) return;
+
+  fetch('/api/reports')
+    .then(function(res) {
+      if (!res.ok) return null;
+      return res.json();
+    })
+    .then(function(reports) {
+      if (!reports || !reports.length) return;
+      var html = '';
+      for (var i = 0; i < reports.length; i++) {
+        var r = reports[i];
+        var verdictBg = r.needs_update === 'yes' ? 'bg-error/10 text-error' :
+                        r.needs_update === 'no' ? 'bg-secondary/10 text-secondary' :
+                        'bg-surface-container-highest text-outline';
+        html += '<a href="#/compare/' + escapeHtml(r.job_id) + '" class="block p-5 bg-surface-container-lowest rounded-xl ghost-border hover:shadow-ambient transition-all">' +
+          '<div class="flex items-center gap-4">' +
+            '<span class="px-3 py-1 text-[10px] font-bold uppercase rounded-xl ' + verdictBg + '">' + escapeHtml(r.needs_update || 'unknown') + '</span>' +
+            '<div class="flex-1">' +
+              '<p class="font-bold text-primary text-sm">' + escapeHtml(r.doe_directive_id || r.job_id) + ' vs ' + escapeHtml(r.netl_directive_id || '\u2014') + '</p>' +
+              '<p class="text-xs text-outline mt-0.5">' + escapeHtml((r.summary || '').substring(0, 120)) + ((r.summary || '').length > 120 ? '...' : '') + '</p>' +
+            '</div>' +
+            '<span class="text-xs text-outline font-mono">' + escapeHtml(r.job_id) + '</span>' +
+          '</div>' +
+        '</a>';
+      }
+      target.innerHTML = html;
+    })
+    .catch(function() {});
+}
+
+// ── UPLOAD LOGIC ──
+function initUploadLogic() {
+  var submitBtn = document.getElementById('submit-btn');
+  if (!submitBtn) return;
+
+  function setupDropZone(dropId, inputId) {
+    var zone = document.getElementById(dropId);
+    var input = document.getElementById(inputId);
+    if (!zone || !input) return;
+
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', function() { zone.classList.remove('dragover'); });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        input.files = e.dataTransfer.files;
+        input.dispatchEvent(new Event('change'));
+      }
+    });
+
+    input.addEventListener('change', function() {
+      if (input.files.length) {
+        zone.classList.add('has-file');
+        var icon = zone.querySelector('.material-symbols-outlined');
+        if (icon) icon.textContent = 'check_circle';
+        var hint = zone.querySelector('.hint');
+        if (hint) {
+          hint.className = 'text-sm font-bold text-secondary';
+          hint.textContent = input.files[0].name;
+        }
+      }
+      checkReady();
+    });
+  }
+
+  function checkReady() {
+    var doeEl = document.getElementById('doe-file');
+    var netlEl = document.getElementById('netl-file');
+    var doe = doeEl && doeEl.files.length > 0;
+    var netl = netlEl && netlEl.files.length > 0;
+    submitBtn.disabled = !(doe && netl);
+  }
+
+  setupDropZone('doe-drop', 'doe-file');
+  setupDropZone('netl-drop', 'netl-file');
+
+  submitBtn.addEventListener('click', function() {
+    var doeEl = document.getElementById('doe-file');
+    var netlEl = document.getElementById('netl-file');
+    var doeFile = doeEl && doeEl.files[0];
+    var netlFile = netlEl && netlEl.files[0];
+    if (!doeFile || !netlFile) return;
+
+    document.getElementById('upload-section').classList.add('hidden');
+    document.getElementById('progress-section').classList.remove('hidden');
+
+    var form = new FormData();
+    form.append('doe_file', doeFile);
+    form.append('netl_file', netlFile);
+
+    fetch('/api/upload', { method: 'POST', body: form })
+      .then(function(res) {
+        if (!res.ok) {
+          return res.json().then(function(err) {
+            showToast('Upload failed: ' + (err.detail || res.statusText), 'error');
+            document.getElementById('upload-section').classList.remove('hidden');
+            document.getElementById('progress-section').classList.add('hidden');
+          });
+        }
+        return res.json().then(function(data) {
+          AppState.activeJob = data.job_id;
+          listenProgress(data.job_id);
+        });
+      })
+      .catch(function(e) {
+        showToast('Upload error: ' + e.message, 'error');
+        document.getElementById('upload-section').classList.remove('hidden');
+        document.getElementById('progress-section').classList.add('hidden');
+      });
+  });
+}
+
 function listenProgress(jobId) {
-  const log = document.getElementById('progress-log');
-  const fill = document.getElementById('progress-fill');
-  const pct = document.getElementById('progress-pct');
+  var log = document.getElementById('progress-log');
+  var fill = document.getElementById('progress-fill');
+  var pct = document.getElementById('progress-pct');
+  if (!log || !fill || !pct) return;
 
-  const es = new EventSource(`/api/status/${jobId}`);
+  var es = new EventSource('/api/status/' + encodeURIComponent(jobId));
 
-  es.addEventListener('progress', e => {
-    const data = JSON.parse(e.data);
+  es.addEventListener('progress', function(e) {
+    var data = JSON.parse(e.data);
     fill.style.width = data.progress + '%';
     pct.textContent = data.progress + '%';
 
-    const entry = document.createElement('div');
-    entry.className = `log-entry stage-${data.stage}`;
-    entry.innerHTML = `<span class="stage-tag">${data.stage}</span>${escapeHtml(data.detail)}`;
+    var entry = document.createElement('div');
+    entry.className = 'stage-' + data.stage;
+    entry.innerHTML = '<span class="stage-tag">' + escapeHtml(data.stage) + '</span>' + escapeHtml(data.detail);
     log.appendChild(entry);
     log.scrollTop = log.scrollHeight;
   });
 
-  es.addEventListener('complete', async e => {
+  es.addEventListener('complete', function(e) {
     es.close();
-    const data = JSON.parse(e.data);
+    var data = JSON.parse(e.data);
     if (data.status === 'done') {
-      const res = await fetch(`/api/report/${jobId}`);
-      const result = await res.json();
-      showResults(result.report);
+      window.location.hash = '#/compare/' + jobId;
     } else {
       pct.textContent = 'Error';
-      fill.style.background = 'var(--red)';
+      fill.style.background = '#ba1a1a';
     }
   });
 
-  es.onerror = () => {
+  es.onerror = function() {
     es.close();
     pct.textContent = 'Connection lost';
   };
 }
 
-function escapeHtml(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
+// ── Toast Notifications ──
+function showToast(message, type) {
+  var colors = {
+    error: 'bg-error-container text-on-error-container',
+    success: 'bg-secondary-container text-on-secondary-container',
+    info: 'bg-surface-container-highest text-on-surface',
+  };
 
-// --- Render results ---
-function showResults(report) {
-  document.getElementById('progress-section').style.display = 'none';
-  const section = document.getElementById('results-section');
-  section.style.display = 'block';
+  var toast = document.createElement('div');
+  toast.className = 'fixed top-4 right-4 z-[100] px-6 py-3 rounded-xl shadow-ambient-lg ' + (colors[type] || colors.info) + ' text-sm font-semibold transition-all duration-300';
+  toast.textContent = message;
+  document.body.appendChild(toast);
 
-  const needsUpdate = report.needs_update || 'uncertain';
-  const confidence = report.confidence || 'unknown';
-  const verdictClass = `verdict-${needsUpdate}`;
-  const verdictLabel = needsUpdate === 'yes' ? 'Update\nNeeded'
-                     : needsUpdate === 'no' ? 'Up to\nDate'
-                     : 'Uncertain';
-
-  let html = `
-    <div class="result-header">
-      <div class="verdict-badge ${verdictClass}">${verdictLabel}</div>
-      <div class="result-meta">
-        <h2>Comparison Result <span class="status-badge" style="font-size:0.7rem">Confidence: ${escapeHtml(confidence)}</span></h2>
-        <p>${escapeHtml(report.summary || '')}</p>
-        <div class="ids">
-          <span>DOE: <strong>${escapeHtml(report.doe_directive_id || report.doe_source_file || '')}</strong></span>
-          <span>NETL: <strong>${escapeHtml(report.netl_directive_id || report.netl_source_file || '')}</strong></span>
-        </div>
-      </div>
-    </div>
-  `;
-
-  // Version alignment
-  if (report.version_alignment) {
-    const va = report.version_alignment;
-    html += `
-      <div class="card">
-        <h3>Version Alignment</h3>
-        <div class="finding">
-          <div class="finding-title">${va.aligned ? 'Aligned' : 'Not Aligned'}</div>
-          <div class="finding-detail">${escapeHtml(va.detail || '')}</div>
-        </div>
-      </div>
-    `;
-  }
-
-  // Section-by-section
-  const sections = report.section_by_section || [];
-  if (sections.length) {
-    html += `<div class="card"><h3>Section-by-Section Findings <span class="count">${sections.length}</span></h3>`;
-    for (const s of sections) {
-      const sc = s.status || 'misaligned';
-      html += `
-        <div class="finding">
-          <div class="finding-title">${escapeHtml(s.topic || '')} <span class="status-badge status-${sc}">${sc.replace(/_/g, ' ')}</span></div>
-          <div class="finding-detail">${escapeHtml(s.detail || '')}</div>
-        </div>
-      `;
-    }
-    html += `</div>`;
-  }
-
-  // Missing requirements
-  const missing = report.missing_requirements || [];
-  if (missing.length) {
-    html += `<div class="card"><h3>Missing Requirements <span class="count">${missing.length}</span></h3>`;
-    for (const m of missing) {
-      html += `
-        <div class="finding priority-high">
-          <div class="finding-title">${escapeHtml(m.doe_requirement || '')}</div>
-          <div class="finding-detail">${escapeHtml(m.detail || '')}</div>
-        </div>
-      `;
-    }
-    html += `</div>`;
-  }
-
-  // Outdated references
-  const refs = report.outdated_references || [];
-  if (refs.length) {
-    html += `<div class="card"><h3>Outdated References <span class="count">${refs.length}</span></h3>`;
-    for (const r of refs) {
-      html += `
-        <div class="finding priority-medium">
-          <div class="finding-title">${escapeHtml(r.netl_reference || '')} → ${escapeHtml(r.current_reference || '')}</div>
-          <div class="finding-detail">${escapeHtml(r.detail || '')}</div>
-        </div>
-      `;
-    }
-    html += `</div>`;
-  }
-
-  // Responsibility gaps
-  const gaps = report.responsibility_gaps || [];
-  if (gaps.length) {
-    html += `<div class="card"><h3>Responsibility Gaps <span class="count">${gaps.length}</span></h3>`;
-    for (const g of gaps) {
-      html += `
-        <div class="finding">
-          <div class="finding-title">${escapeHtml(g.role || '')}</div>
-          <div class="finding-detail">${escapeHtml(g.gap || '')}</div>
-        </div>
-      `;
-    }
-    html += `</div>`;
-  }
-
-  // Definition differences
-  const defs = report.definition_differences || [];
-  if (defs.length) {
-    html += `<div class="card"><h3>Definition Differences <span class="count">${defs.length}</span></h3>`;
-    for (const d of defs) {
-      html += `
-        <div class="finding">
-          <div class="finding-title">${escapeHtml(d.term || '')}</div>
-          <div class="finding-detail">${escapeHtml(d.detail || '')}</div>
-        </div>
-      `;
-    }
-    html += `</div>`;
-  }
-
-  // Recommendations
-  const recs = report.recommendations || [];
-  if (recs.length) {
-    html += `<div class="card"><h3>Recommendations <span class="count">${recs.length}</span></h3>`;
-    for (const r of recs) {
-      const p = r.priority || 'medium';
-      html += `
-        <div class="finding priority-${p}">
-          <div class="finding-title">${escapeHtml(r.section || '')} <span class="status-badge">${p} priority</span></div>
-          <div class="finding-detail">${escapeHtml(r.action || '')}</div>
-        </div>
-      `;
-    }
-    html += `</div>`;
-  }
-
-  html += `<button id="new-comparison-btn" onclick="resetUI()">New Comparison</button>`;
-  section.innerHTML = html;
-}
-
-function resetUI() {
-  document.getElementById('upload-section').style.display = 'block';
-  document.getElementById('progress-section').style.display = 'none';
-  document.getElementById('results-section').style.display = 'none';
-
-  // Reset file inputs
-  document.getElementById('doe-file').value = '';
-  document.getElementById('netl-file').value = '';
-  for (const zone of document.querySelectorAll('.drop-zone')) {
-    zone.classList.remove('has-file');
-    zone.querySelector('.icon').textContent = '\uD83D\uDCC4';
-    const fn = zone.querySelector('.filename');
-    if (fn) { fn.className = 'hint'; fn.textContent = 'Drop PDF here or click to browse'; }
-  }
-
-  // Reset progress
-  document.getElementById('progress-fill').style.width = '0%';
-  document.getElementById('progress-fill').style.background = '';
-  document.getElementById('progress-pct').textContent = '0%';
-  document.getElementById('progress-log').innerHTML = '';
-
-  submitBtn.disabled = true;
+  setTimeout(function() {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-8px)';
+    setTimeout(function() { toast.remove(); }, 300);
+  }, 4000);
 }
 </script>
+
 </body>
 </html>

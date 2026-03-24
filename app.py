@@ -13,7 +13,7 @@ import uuid
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sse_starlette.sse import EventSourceResponse
@@ -125,7 +125,20 @@ async def _run_pipeline(job_id: str, doe_path: Path, netl_path: Path):
         report_path = Path(f"data/report_{job_id}.json")
         save_comparison_report([result], str(report_path))
 
+        # Persist extracted sections alongside the report
+        sections_path = Path(f"data/sections_{job_id}.json")
+        sections_data = {
+            "doe_sections": doe_sections,
+            "netl_sections": netl_sections,
+            "doe_info": doe_info.to_dict(),
+            "netl_info": netl_info.to_dict(),
+        }
+        sections_path.write_text(
+            json.dumps(sections_data, indent=2), encoding="utf-8"
+        )
+
         job["report"] = result
+        job["sections"] = sections_data
         job["status"] = "done"
         push("done", "Analysis complete!", 100)
 
@@ -211,5 +224,262 @@ async def get_report(job_id: str):
     return JSONResponse({"status": "done", "report": job["report"]})
 
 
-# Serve frontend
+def _load_report(job_id: str) -> dict | None:
+    """Load a report by job_id from memory or disk."""
+    # Check in-memory first
+    job = jobs.get(job_id)
+    if job and job["status"] == "done" and job.get("report"):
+        return job["report"]
+    # Check disk
+    path = Path(f"data/report_{job_id}.json")
+    if path.exists():
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data[0] if isinstance(data, list) else data
+    return None
+
+
+@app.get("/api/report/{job_id}/sections")
+async def get_report_sections(job_id: str):
+    """Return DOE and NETL sections side-by-side with cross-mapping."""
+    report = _load_report(job_id)
+    if not report:
+        raise HTTPException(404, "Report not found")
+
+    sbs = report.get("section_by_section", [])
+
+    doe_sections = []
+    netl_sections = []
+    unmapped_doe = []
+    unmapped_netl = []
+
+    for i, s in enumerate(sbs):
+        section_id = str(i + 1)
+        status = s.get("status", "aligned")
+        topic = s.get("topic", "")
+        doe_content = s.get("doe_content", "")
+        netl_content = s.get("netl_content", "")
+        detail = s.get("detail", "")
+
+        doe_entry = {
+            "id": section_id,
+            "heading": topic,
+            "content": doe_content,
+            "mapped_netl_section": section_id if status != "netl_only" else None,
+            "findings": [{"status": status, "detail": detail}] if status != "aligned" else [],
+        }
+        netl_entry = {
+            "id": section_id,
+            "heading": topic,
+            "content": netl_content,
+            "mapped_doe_section": section_id if status != "missing_from_netl" else None,
+            "findings": [{"status": status, "detail": detail}] if status != "aligned" else [],
+        }
+
+        if status != "netl_only":
+            doe_sections.append(doe_entry)
+        if status == "netl_only":
+            netl_sections.append(netl_entry)
+            unmapped_netl.append(section_id)
+        elif status == "missing_from_netl":
+            netl_entry["content"] = "NOT ADDRESSED"
+            netl_sections.append(netl_entry)
+            unmapped_doe.append(section_id)
+        else:
+            netl_sections.append(netl_entry)
+
+    return JSONResponse({
+        "doe_directive_id": report.get("doe_directive_id", ""),
+        "netl_directive_id": report.get("netl_directive_id", ""),
+        "doe_sections": doe_sections,
+        "netl_sections": netl_sections,
+        "unmapped_doe_sections": unmapped_doe,
+        "unmapped_netl_sections": unmapped_netl,
+    })
+
+
+@app.get("/api/report/{job_id}/gaps")
+async def get_report_gaps(job_id: str):
+    """Return gap analysis summary for a report."""
+    report = _load_report(job_id)
+    if not report:
+        raise HTTPException(404, "Report not found")
+
+    sbs = report.get("section_by_section", [])
+    missing = report.get("missing_requirements", [])
+    recs = report.get("recommendations", [])
+    resp_gaps = report.get("responsibility_gaps", [])
+    def_diffs = report.get("definition_differences", [])
+    outdated = report.get("outdated_references", [])
+
+    # Count discrepancies and critical gaps
+    discrepancies = sum(1 for s in sbs if s.get("status") in ("misaligned", "outdated"))
+    critical_gaps = sum(1 for s in sbs if s.get("status") == "missing_from_netl")
+
+    # Build issue cards from various findings
+    issues = []
+    for i, s in enumerate(sbs):
+        status = s.get("status", "aligned")
+        if status == "aligned":
+            continue
+        issue_type = {
+            "misaligned": "conflict",
+            "missing_from_netl": "missing",
+            "outdated": "outdated",
+            "netl_only": "netl_extra",
+        }.get(status, "info")
+        issues.append({
+            "id": f"sbs-{i}",
+            "type": issue_type,
+            "ref": s.get("topic", ""),
+            "title": f"{s.get('topic', 'Section')} — {status.replace('_', ' ').title()}",
+            "description": s.get("detail", ""),
+        })
+
+    for i, m in enumerate(missing):
+        issues.append({
+            "id": f"missing-{i}",
+            "type": "missing",
+            "ref": m.get("doe_requirement", ""),
+            "title": f"Missing: {m.get('doe_requirement', '')[:60]}",
+            "description": m.get("detail", ""),
+        })
+
+    # Compute alignment score
+    total_sections = len(sbs) if sbs else 1
+    aligned_count = sum(1 for s in sbs if s.get("status") == "aligned")
+    alignment_pct = round((aligned_count / total_sections) * 100)
+
+    return JSONResponse({
+        "discrepancies": discrepancies,
+        "critical_gaps": critical_gaps,
+        "alignment_pct": alignment_pct,
+        "issues": issues,
+        "missing_requirements": missing,
+        "recommendations": recs,
+        "responsibility_gaps": resp_gaps,
+        "definition_differences": def_diffs,
+        "outdated_references": outdated,
+        "summary": report.get("summary", ""),
+        "needs_update": report.get("needs_update", "uncertain"),
+        "confidence": report.get("confidence", "unknown"),
+    })
+
+
+@app.post("/api/report/{job_id}/suggest")
+async def suggest_edit(job_id: str, request: Request):
+    """Trigger AI-generated edit suggestion for a specific gap."""
+    report = _load_report(job_id)
+    if not report:
+        raise HTTPException(404, "Report not found")
+
+    body = await request.json()
+    gap_id = body.get("gap_id", "")
+    context = body.get("context", "")
+
+    # Find the gap in the report
+    sbs = report.get("section_by_section", [])
+    missing = report.get("missing_requirements", [])
+    gap_detail = ""
+    gap_topic = ""
+
+    if gap_id.startswith("sbs-"):
+        idx = int(gap_id.split("-")[1])
+        if idx < len(sbs):
+            s = sbs[idx]
+            gap_detail = s.get("detail", "")
+            gap_topic = s.get("topic", "")
+    elif gap_id.startswith("missing-"):
+        idx = int(gap_id.split("-")[1])
+        if idx < len(missing):
+            m = missing[idx]
+            gap_detail = m.get("detail", "")
+            gap_topic = m.get("doe_requirement", "")
+
+    if not gap_detail and not context:
+        return JSONResponse({"suggested_text": "", "rationale": "No gap context provided."})
+
+    try:
+        chat_service = _build_chat_service()
+        from semantic_kernel.contents.chat_history import ChatHistory
+        from semantic_kernel.connectors.ai.open_ai import AzureChatPromptExecutionSettings
+
+        history = ChatHistory()
+        history.add_system_message(
+            "You are a government directive compliance expert. Given a gap between "
+            "a DOE order and NETL implementation, suggest specific text that the NETL "
+            "directive should include to address the gap. Be precise and use formal "
+            "directive language."
+        )
+        history.add_user_message(
+            f"Gap topic: {gap_topic}\n"
+            f"Gap detail: {gap_detail}\n"
+            f"Additional context: {context}\n\n"
+            f"DOE Directive: {report.get('doe_directive_id', '')}\n"
+            f"NETL Directive: {report.get('netl_directive_id', '')}\n\n"
+            "Provide a JSON response with:\n"
+            '{"suggested_text": "<the text NETL should add or modify>", '
+            '"rationale": "<why this change addresses the gap>"}'
+        )
+
+        settings = AzureChatPromptExecutionSettings(temperature=0.3)
+        response = await chat_service.get_chat_message_content(
+            chat_history=history, settings=settings,
+        )
+
+        from directive_extractor import _parse_json_response
+        result = _parse_json_response(str(response), "suggest edit")
+        return JSONResponse(result)
+    except Exception as exc:
+        return JSONResponse({
+            "suggested_text": "",
+            "rationale": f"Failed to generate suggestion: {str(exc)}",
+        }, status_code=500)
+
+
+@app.get("/api/reports")
+async def list_reports():
+    """List all completed comparison reports (in-memory + saved JSON files)."""
+    import glob
+
+    results = []
+
+    # In-memory completed jobs
+    for job_id, job in jobs.items():
+        if job["status"] == "done" and job.get("report"):
+            r = job["report"]
+            results.append({
+                "job_id": job_id,
+                "doe_directive_id": r.get("doe_directive_id", ""),
+                "netl_directive_id": r.get("netl_directive_id", ""),
+                "needs_update": r.get("needs_update", "uncertain"),
+                "confidence": r.get("confidence", "unknown"),
+                "summary": r.get("summary", ""),
+            })
+
+    # Saved report JSON files
+    seen_ids = {r["job_id"] for r in results}
+    for path in sorted(glob.glob("data/report_*.json"), reverse=True):
+        try:
+            job_id = Path(path).stem.replace("report_", "")
+            if job_id in seen_ids:
+                continue
+            with open(path) as f:
+                data = json.load(f)
+            # Handle both list and dict formats
+            report = data[0] if isinstance(data, list) else data
+            results.append({
+                "job_id": job_id,
+                "doe_directive_id": report.get("doe_directive_id", ""),
+                "netl_directive_id": report.get("netl_directive_id", ""),
+                "needs_update": report.get("needs_update", "uncertain"),
+                "confidence": report.get("confidence", "unknown"),
+                "summary": report.get("summary", ""),
+            })
+        except Exception:
+            continue
+
+    return JSONResponse(results)
+
+
+# Serve frontend — SPA catch-all: serve index.html for all non-API routes
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

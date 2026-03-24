@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NETL Directive Editor | Architectural Archive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "outline": "#747781",
+                        "inverse-on-surface": "#f8efef",
+                        "on-tertiary-fixed": "#001c37",
+                        "secondary-container": "#bdf464",
+                        "surface-container-high": "#efe6e7",
+                        "secondary-fixed-dim": "#a2d74b",
+                        "on-primary-fixed": "#001b3f",
+                        "outline-variant": "#c4c6d1",
+                        "on-error": "#ffffff",
+                        "background": "#fff8f8",
+                        "on-background": "#1e1b1c",
+                        "surface-variant": "#e9e0e1",
+                        "primary-fixed-dim": "#abc7ff",
+                        "on-secondary-container": "#4b6f00",
+                        "tertiary-fixed-dim": "#a1c9ff",
+                        "secondary-fixed": "#bdf464",
+                        "on-primary-fixed-variant": "#24467c",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "surface": "#fff8f8",
+                        "on-secondary-fixed-variant": "#344e00",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#003057",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#004880",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#3e5e95",
+                        "surface-container-low": "#fbf1f2",
+                        "on-secondary-fixed": "#121f00",
+                        "on-primary-container": "#7796d1",
+                        "on-surface": "#1e1b1c",
+                        "surface-container-highest": "#e9e0e1",
+                        "inverse-surface": "#342f30",
+                        "primary-container": "#002d62",
+                        "surface-container": "#f5eced",
+                        "surface-dim": "#e1d8d9",
+                        "tertiary": "#001b35",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#d7e2ff",
+                        "tertiary-fixed": "#d2e4ff",
+                        "on-surface-variant": "#43474f",
+                        "secondary": "#466800",
+                        "surface-bright": "#fff8f8",
+                        "on-tertiary-container": "#5f99de",
+                        "inverse-primary": "#abc7ff",
+                        "primary": "#00193c"
+                    },
+                    fontFamily: {
+                        "headline": ["Public Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .tonal-layering-no-borders { border: none !important; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-secondary-container selection:text-on-secondary-container overflow-hidden">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 right-0 left-64 z-50 bg-[#fff8f8] dark:bg-slate-950 flex justify-between items-center px-8 py-4 max-w-[1920px] mx-auto border-b-0">
+<div class="flex items-center gap-8">
+<h1 class="text-xl font-bold tracking-tight text-[#00193c] dark:text-slate-100">Architectural Archive</h1>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-[#002d62] transition-colors" href="#">Directives</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-[#002d62] transition-colors" href="#">DOE Orders</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:text-[#002d62] transition-colors" href="#">Manuals</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-600 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional man in a workspace environment, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpvRb8ITAMQ1WwYEMnIu49oSZcG3s3Cxq4F9Q9Vq4taw-dOgZoc9d7H0mr2Ny6Qz_gJyviaN_NcOT_TGQTxegrsQuSXu5o0_KalSQpgpKjwwVLe6LzIhQ1TwtK50Ahbk94jQYvREemkWXsXRA0rJnnFS6beIzUEuqK2u1S7GZFoySOIwclydjiCSMPIS9Bh4boqwDZ8i6GdiGfGg9caNLbeykgbTcXpA4Mk1fWv151FAY-orKXYTolEho5fyk3THOw3m60l7b1ZrM"/>
+</div>
+</div>
+</header>
+<!-- Side Navigation Sidebar -->
+<aside class="fixed left-0 top-0 h-full w-64 flex flex-col py-6 z-40 bg-[#fbf1f2] dark:bg-slate-900 tonal-differentiation-no-borders">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary flex items-center justify-center rounded-lg">
+<span class="material-symbols-outlined text-on-primary" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h2 class="font-black text-[#00193c] dark:text-slate-100 text-lg leading-tight">NETL</h2>
+<p class="text-[10px] uppercase tracking-widest text-slate-500">Document Archive</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-4 px-6 py-3 text-slate-600 dark:text-slate-400 hover:bg-[#f5eced] dark:hover:bg-slate-800 transition-all duration-200 font-public-sans tracking-tight text-[11px] uppercase" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-slate-600 dark:text-slate-400 hover:bg-[#f5eced] dark:hover:bg-slate-800 transition-all duration-200 font-public-sans tracking-tight text-[11px] uppercase" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="library_books">library_books</span>
+<span>Directives Library</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-slate-600 dark:text-slate-400 hover:bg-[#f5eced] dark:hover:bg-slate-800 transition-all duration-200 font-public-sans tracking-tight text-[11px] uppercase" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="compare_arrows">compare_arrows</span>
+<span>Comparison Tool</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 bg-[#e9e0e1] dark:bg-slate-800 text-[#00193c] dark:text-blue-300 font-bold border-r-4 border-[#00193c] font-public-sans tracking-tight text-[11px] uppercase" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="analytics">analytics</span>
+<span>Gap Analysis</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-slate-600 dark:text-slate-400 hover:bg-[#f5eced] dark:hover:bg-slate-800 transition-all duration-200 font-public-sans tracking-tight text-[11px] uppercase" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="history">history</span>
+<span>History</span>
+</a>
+</nav>
+<div class="px-6 mb-6">
+<button class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                New Comparison
+            </button>
+</div>
+<div class="px-6 space-y-1">
+<a class="flex items-center gap-4 py-2 text-slate-500 text-[11px] uppercase tracking-wider hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="help">help</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-4 py-2 text-slate-500 text-[11px] uppercase tracking-wider hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span>Archive Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pl-64 pt-[72px] h-screen flex flex-col bg-surface overflow-hidden">
+<!-- Toolbar / Header Area -->
+<div class="px-8 py-6 flex items-center justify-between bg-surface-container-low">
+<div>
+<nav class="flex items-center gap-2 mb-1">
+<span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Directives</span>
+<span class="material-symbols-outlined text-[14px] text-slate-300" data-icon="chevron_right">chevron_right</span>
+<span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Draft 402.1-B</span>
+</nav>
+<h2 class="text-2xl font-black text-primary tracking-tight">Cybersecurity Framework Alignment</h2>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-surface-container rounded-full px-1 py-1">
+<button class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-surface-container-lowest shadow-sm text-primary">NETL Source</button>
+<button class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-slate-500 hover:text-primary transition-colors">DOE Cross-Ref</button>
+</div>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-secondary-container text-on-secondary-container font-bold rounded-xl text-sm transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]" data-icon="auto_awesome">auto_awesome</span>
+                    Generate Edited Directive
+                </button>
+</div>
+</div>
+<!-- Editor & Analysis Split Pane -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Pane: The Directive Editor -->
+<div class="w-[60%] flex flex-col bg-surface-container overflow-hidden">
+<!-- Rich Text Tools -->
+<div class="px-6 py-3 flex items-center gap-1 bg-surface-container-highest/50 backdrop-blur-md sticky top-0 z-10 border-b border-outline-variant/10">
+<button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant"><span class="material-symbols-outlined text-[20px]" data-icon="format_bold">format_bold</span></button>
+<button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant"><span class="material-symbols-outlined text-[20px]" data-icon="format_italic">format_italic</span></button>
+<button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant"><span class="material-symbols-outlined text-[20px]" data-icon="format_list_bulleted">format_list_bulleted</span></button>
+<div class="w-px h-6 bg-outline-variant/30 mx-2"></div>
+<button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant"><span class="material-symbols-outlined text-[20px]" data-icon="link">link</span></button>
+<button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant"><span class="material-symbols-outlined text-[20px]" data-icon="image">image</span></button>
+<div class="w-px h-6 bg-outline-variant/30 mx-2"></div>
+<button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant"><span class="material-symbols-outlined text-[20px]" data-icon="history_edu">history_edu</span></button>
+<div class="ml-auto flex items-center gap-3">
+<span class="text-[10px] text-slate-400 font-medium">Last saved: 2m ago</span>
+</div>
+</div>
+<!-- Scrollable Editor Canvas -->
+<div class="flex-1 overflow-y-auto p-12 no-scrollbar">
+<div class="max-w-2xl mx-auto bg-surface-container-lowest p-16 shadow-2xl shadow-primary/5 min-h-screen">
+<div class="mb-10 border-b border-surface-container-high pb-8">
+<p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">NETL Directive 402.1-B</p>
+<h1 class="text-4xl font-black text-primary leading-tight mb-2">Technical Information Management &amp; Security</h1>
+<p class="text-slate-500 font-medium italic">Effective Date: October 24, 2023</p>
+</div>
+<div class="space-y-8 text-on-surface leading-relaxed text-lg">
+<section>
+<h3 class="font-bold text-primary text-xl mb-4">1. PURPOSE</h3>
+<p>This directive establishes the mandatory requirements for the management, protection, and dissemination of technical information at the National Energy Technology Laboratory (NETL). It ensures that all scientific and technical results are captured, managed, and made available in accordance with Department of Energy (DOE) statutory requirements.</p>
+</section>
+<section class="bg-primary/5 p-4 rounded-lg border-l-4 border-primary">
+<h3 class="font-bold text-primary text-xl mb-4">2. SCOPE</h3>
+<p>This directive applies to all NETL federal and contractor employees engaged in research and development activities, regardless of the funding source or performance location. <span class="bg-secondary-container/30 px-1 border-b-2 border-secondary font-medium">Current draft lacks specific sub-clause for cross-laboratory collaborative projects.</span></p>
+</section>
+<section>
+<h3 class="font-bold text-primary text-xl mb-4">3. REQUIREMENTS</h3>
+<p>3.1. Technical reports must be submitted through the Lab's internal clearance process before any public release.</p>
+<p>3.2. All data sets must include standardized metadata as defined in the Lab’s Data Management Plan (DMP).</p>
+<p>3.3. Researchers must utilize the approved institutional repository for all archival storage of final research data.</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Pane: Gap Analysis -->
+<div class="w-[40%] bg-surface-container-low overflow-y-auto flex flex-col border-l border-outline-variant/10">
+<div class="px-8 py-6 border-b border-outline-variant/10">
+<h3 class="text-xs uppercase tracking-[0.2em] font-black text-primary mb-2">Automated Gap Analysis</h3>
+<p class="text-sm text-slate-500">Comparison with <span class="font-bold text-on-surface">DOE Order 241.1B (CHG 1)</span></p>
+</div>
+<div class="p-6 space-y-6">
+<!-- Analysis Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-error">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error" data-icon="error_outline">error_outline</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-error">Critical Gap</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400">Section 2.0</span>
+</div>
+<h4 class="font-bold text-primary mb-2">Missing Collaborative Provision</h4>
+<p class="text-sm text-slate-600 mb-4 leading-relaxed">The current draft does not account for the mandatory reporting requirements for projects involving multiple national labs, as specified in DOE O 241.1B.</p>
+<div class="bg-surface-container-low p-4 rounded-lg">
+<p class="text-[10px] font-bold text-slate-500 uppercase mb-2">Suggested Addition:</p>
+<p class="text-sm italic text-primary">"For projects involving collaboration with other DOE National Laboratories, a lead laboratory must be designated for all technical information reporting."</p>
+</div>
+<div class="mt-4 flex gap-2">
+<button class="px-4 py-2 bg-primary text-on-primary text-xs font-bold rounded-lg hover:opacity-90">Apply Change</button>
+<button class="px-4 py-2 text-slate-400 text-xs font-bold hover:text-primary transition-colors">Dismiss</button>
+</div>
+</div>
+<!-- Analysis Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-secondary">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-secondary">Terminology Update</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400">Section 3.2</span>
+</div>
+<h4 class="font-bold text-primary mb-2">Metadata Standardization</h4>
+<p class="text-sm text-slate-600 mb-4 leading-relaxed">Update "DMP" to "STIP-compliant Metadata Framework" to align with current DOE STI Program guidelines.</p>
+<div class="mt-4 flex gap-2">
+<button class="px-4 py-2 bg-primary text-on-primary text-xs font-bold rounded-lg hover:opacity-90">Apply Change</button>
+<button class="px-4 py-2 text-slate-400 text-xs font-bold hover:text-primary transition-colors">Dismiss</button>
+</div>
+</div>
+<!-- Analysis Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-on-primary-container">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="info">info</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-primary-container">Optimization</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400">General</span>
+</div>
+<h4 class="font-bold text-primary mb-2">Clarify Public Release Timeline</h4>
+<p class="text-sm text-slate-600 mb-4 leading-relaxed">DOE recommends specifying a 'no later than' window of 30 days for technical report clearance. Your draft is currently vague on deadlines.</p>
+<div class="mt-4 flex gap-2">
+<button class="px-4 py-2 bg-primary text-on-primary text-xs font-bold rounded-lg hover:opacity-90">Review Requirement</button>
+</div>
+</div>
+</div>
+<!-- Bottom Floating Stat Panel -->
+<div class="mt-auto p-8 bg-surface-container-highest/30 backdrop-blur-sm border-t border-outline-variant/20">
+<div class="flex justify-between items-center mb-4">
+<span class="text-xs font-bold text-primary uppercase">Alignment Score</span>
+<span class="text-xl font-black text-secondary">82%</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-full" style="width: 82%"></div>
+</div>
+<p class="text-[10px] text-slate-500 mt-3 italic text-center">3 critical gaps remaining for full DOE compliance.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Hidden on this view per rules, but shown here for UI completeness if intended - suppressed based on "focused journey" rule) -->
+</body></html>
