@@ -55,6 +55,28 @@
             "surface-container":         "#f5eced",
             "surface-container-high":    "#efe6e7",
             "surface-container-highest": "#e9e0e1",
+            /* Dark mode surface & semantic colors */
+            "dark-surface":               "#1a1a1e",
+            "dark-surface-container-lowest":"#111114",
+            "dark-surface-container-low":  "#1e1e22",
+            "dark-surface-container":      "#252529",
+            "dark-surface-container-high": "#2f2f34",
+            "dark-surface-container-highest":"#3a3a3f",
+            "dark-on-surface":             "#e4e1e6",
+            "dark-on-surface-variant":     "#c4c6d0",
+            "dark-outline":                "#8e9099",
+            "dark-outline-variant":        "#44474e",
+            "dark-primary":                "#abc7ff",
+            "dark-on-primary":             "#002f65",
+            "dark-primary-container":      "#1e4a7e",
+            "dark-secondary":              "#a2d74b",
+            "dark-secondary-container":    "#345000",
+            "dark-on-secondary-container": "#bdf464",
+            "dark-tertiary":               "#a1c9ff",
+            "dark-tertiary-container":     "#004880",
+            "dark-error":                  "#ffb4ab",
+            "dark-error-container":        "#93000a",
+            "dark-on-error-container":     "#ffdad6",
           },
           fontFamily: {
             sans:     ["Public Sans", "system-ui", "sans-serif"],
@@ -86,12 +108,18 @@
     .ghost-border {
       border: 1px solid rgba(196, 198, 209, 0.15);
     }
+    .dark .ghost-border {
+      border-color: rgba(68, 71, 78, 0.3);
+    }
 
     /* Glassmorphism panel */
     .glass-panel {
       background: rgba(255, 248, 248, 0.8);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
+    }
+    .dark .glass-panel {
+      background: rgba(26, 26, 30, 0.85);
     }
 
     /* Ambient shadow presets */
@@ -100,6 +128,12 @@
     }
     .shadow-ambient-lg {
       box-shadow: 0 12px 40px rgba(30, 27, 28, 0.06);
+    }
+    .dark .shadow-ambient {
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    }
+    .dark .shadow-ambient-lg {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
     }
 
     /* Headline letter-spacing */
@@ -118,11 +152,19 @@
       font-weight: 700;
       color: #00193c;
     }
+    .dark .nav-active {
+      background-color: #3a3a3f;
+      border-right-color: #abc7ff;
+      color: #abc7ff;
+    }
     .nav-active:active { transform: scale(0.98); }
 
     /* Progress bar gradient */
     .progress-gradient {
       background: linear-gradient(90deg, #00193c, #002d62);
+    }
+    .dark .progress-gradient {
+      background: linear-gradient(90deg, #abc7ff, #1e4a7e);
     }
 
     /* SSE log stage colors */
@@ -154,11 +196,43 @@
       background: #e9e0e1;
       border-radius: 0.5rem;
     }
+    .dark .skeleton {
+      background: #3a3a3f;
+    }
 
     /* Drop zone */
     .drop-zone { transition: border-color 0.2s, background 0.2s; }
     .drop-zone.dragover { border-color: #00193c; background: rgba(0,25,60,0.03); }
     .drop-zone.has-file { border-color: #466800; background: rgba(70,104,0,0.03); }
+    .dark .drop-zone.dragover { border-color: #abc7ff; background: rgba(171,199,255,0.05); }
+    .dark .drop-zone.has-file { border-color: #a2d74b; background: rgba(162,215,75,0.05); }
+
+    /* Screen reader only */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+
+    /* Focus indicators (ghost-border style per design system) */
+    :focus-visible {
+      outline: 2px solid #00193c;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .dark :focus-visible {
+      outline-color: #abc7ff;
+    }
+
+    /* Skip to main content link */
+    .skip-link {
+      position: absolute; left: -9999px; top: 0;
+      z-index: 9999; padding: 0.75rem 1.5rem;
+      background: #00193c; color: #fff;
+      font-weight: 700; font-size: 0.875rem;
+      border-radius: 0 0 0.5rem 0;
+    }
+    .skip-link:focus { left: 0; }
 
     /* Hide scrollbar on sidebar */
     aside::-webkit-scrollbar { width: 0; }
@@ -167,26 +241,141 @@
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* Responsive sidebar collapse */
+    /* ── Dark Mode Overrides ── */
+    .dark body,
+    .dark .bg-surface { background-color: #1a1a1e; color: #e4e1e6; }
+    .dark .bg-surface-container-low { background-color: #1e1e22; }
+    .dark .bg-surface-container { background-color: #252529; }
+    .dark .bg-surface-container-highest { background-color: #3a3a3f; }
+    .dark .bg-surface-container-lowest { background-color: #111114; }
+    .dark .bg-surface-container-high { background-color: #2f2f34; }
+    .dark .bg-background { background-color: #1a1a1e; }
+
+    .dark .text-on-surface { color: #e4e1e6; }
+    .dark .text-on-surface-variant { color: #c4c6d0; }
+    .dark .text-primary { color: #abc7ff; }
+    .dark .text-outline { color: #8e9099; }
+    .dark .text-outline-variant { color: #8e9099; }
+    .dark .text-error { color: #ffb4ab; }
+    .dark .text-secondary { color: #a2d74b; }
+    .dark .text-on-primary { color: #002f65; }
+    .dark .text-on-secondary-container { color: #bdf464; }
+    .dark .text-on-error-container { color: #ffdad6; }
+    .dark .text-on-tertiary-container { color: #a1c9ff; }
+
+    .dark .bg-primary { background-color: #abc7ff; color: #002f65; }
+    .dark .bg-primary-container { background-color: #1e4a7e; }
+    .dark .bg-secondary { background-color: #a2d74b; }
+    .dark .bg-secondary-container { background-color: #345000; }
+    .dark .bg-tertiary-container { background-color: #004880; }
+    .dark .bg-error { background-color: #ffb4ab; color: #690005; }
+    .dark .bg-error-container { background-color: #93000a; }
+
+    .dark .border-primary { border-color: #abc7ff; }
+    .dark .border-error { border-color: #ffb4ab; }
+    .dark .border-secondary { border-color: #a2d74b; }
+    .dark .border-outline-variant { border-color: #44474e; }
+
+    .dark .bg-gradient-to-br.from-primary { --tw-gradient-from: #1e4a7e; }
+    .dark .bg-gradient-to-br.to-primary-container { --tw-gradient-to: #002f65; }
+
+    .dark .ring-primary { --tw-ring-color: #abc7ff; }
+
+    .dark .hover\:bg-surface-container:hover { background-color: #252529; }
+    .dark .hover\:bg-surface-container-highest:hover { background-color: #3a3a3f; }
+
+    .dark input, .dark select, .dark textarea {
+      background-color: #2f2f34;
+      color: #e4e1e6;
+      border-color: #44474e;
+    }
+    .dark input::placeholder { color: #8e9099; }
+
+    /* Dark mode stage tags */
+    .dark .stage-extract  .stage-tag { background: #1e4a7e; color: #abc7ff; }
+    .dark .stage-metadata .stage-tag { background: #252529; color: #a1c9ff; }
+    .dark .stage-sections .stage-tag { background: #345000; color: #bdf464; }
+    .dark .stage-compare  .stage-tag { background: #93000a; color: #ffdad6; }
+    .dark .stage-done     .stage-tag { background: #345000; color: #bdf464; }
+    .dark .stage-error    .stage-tag { background: #93000a; color: #ffb4ab; }
+
+    /* Responsive: Tablet — sidebar icon-only 48px */
     @media (max-width: 1023px) {
-      #sidebar { width: 56px !important; }
+      #sidebar { width: 48px !important; padding-top: 1rem; padding-bottom: 1rem; }
       #sidebar .nav-label, #sidebar .logo-text, #sidebar .sidebar-cta,
       #sidebar .sidebar-footer-label { display: none; }
       #sidebar .logo-icon { margin: 0 auto; }
-      main#main-content { margin-left: 56px !important; }
+      #sidebar .nav-link { justify-content: center; padding-left: 0; padding-right: 0; }
+      #sidebar .px-6 { padding-left: 0.5rem; padding-right: 0.5rem; }
+      #sidebar .px-4 { padding-left: 0.25rem; padding-right: 0.25rem; }
+      main#main-content { margin-left: 48px !important; }
+
+      /* Comparison 3-panel: stack gap sidebar below */
+      #gaps-panel { width: 100% !important; max-height: 40vh; }
+      .flex-1.flex.overflow-hidden { flex-direction: column; }
+      #doe-panel, #netl-panel { min-height: 30vh; }
+
+      /* Gap editor: stack panes */
+      .w-\[60\%\] { width: 100% !important; }
+      .w-\[40\%\] { width: 100% !important; }
     }
+
+    /* Responsive: Mobile — hamburger overlay */
     @media (max-width: 767px) {
-      #sidebar { display: none; }
+      #sidebar {
+        display: none;
+        position: fixed; left: 0; top: 0; width: 256px !important;
+        z-index: 100; box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+      }
+      #sidebar.\!block { display: flex !important; }
       main#main-content { margin-left: 0 !important; }
       #mobile-menu-btn { display: flex !important; }
+
+      /* Sidebar overlay backdrop */
+      #sidebar-backdrop { display: block; }
+
+      /* Comparison: single column stacked */
+      .flex-1.flex.overflow-hidden { flex-direction: column; }
+      #doe-panel, #netl-panel { min-height: 40vh; flex: none; }
+      #gaps-panel { width: 100% !important; flex: none; max-height: 50vh; }
+
+      /* Gap editor: full-width panes */
+      .w-\[60\%\] { width: 100% !important; }
+      .w-\[40\%\] { width: 100% !important; }
+
+      /* Bento grids to single column */
+      .md\:grid-cols-4 { grid-template-columns: 1fr !important; }
+      .md\:grid-cols-12 { grid-template-columns: 1fr !important; }
+      .md\:col-span-8, .md\:col-span-4,
+      .md\:col-span-3, .md\:col-span-9,
+      .md\:col-span-12 { grid-column: span 1 !important; }
+
+      /* Header: tighten spacing */
+      header .px-8 { padding-left: 1rem; padding-right: 1rem; }
+      header .gap-8 { gap: 1rem; }
+      header .hidden.md\:flex { display: none !important; }
+
+      /* FAB toolbar: smaller on mobile */
+      #fab-toolbar { right: 1rem; bottom: 1rem; }
+
+      /* Content padding on mobile */
+      .p-8 { padding: 1rem; }
+
+      /* Floating comparison toolbar: fit mobile */
+      .fixed.bottom-10.left-1\/2 { left: 0.5rem; right: 0.5rem; transform: none; bottom: 1rem; }
     }
   </style>
 </head>
 
 <body class="bg-surface text-on-surface min-h-screen">
+<!-- Screen reader announcements for route changes -->
+<div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true" role="status"></div>
+
+<!-- Skip to main content -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <!-- SIDEBAR NAVIGATION -->
-<aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-surface-container-low flex flex-col py-6 z-40 overflow-y-auto">
+<aside id="sidebar" role="navigation" aria-label="Main navigation" class="fixed left-0 top-0 h-full w-64 bg-surface-container-low flex flex-col py-6 z-40 overflow-y-auto">
   <!-- Logo / Branding -->
   <div class="px-6 mb-8">
     <div class="flex items-center gap-3">
@@ -199,30 +388,30 @@
   </div>
 
   <!-- Nav Links -->
-  <nav id="sidebar-nav" class="flex-1 px-4 space-y-1">
-    <a href="#/dashboard" data-route="dashboard"
+  <nav id="sidebar-nav" class="flex-1 px-4 space-y-1" aria-label="Primary navigation">
+    <a href="#/dashboard" data-route="dashboard" aria-label="Dashboard"
        class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200">
-      <span class="material-symbols-outlined">dashboard</span>
+      <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
       <span class="nav-label text-[11px] uppercase tracking-widest font-semibold">Dashboard</span>
     </a>
-    <a href="#/library" data-route="library"
+    <a href="#/library" data-route="library" aria-label="Directives Library"
        class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200">
-      <span class="material-symbols-outlined">library_books</span>
+      <span class="material-symbols-outlined" aria-hidden="true">library_books</span>
       <span class="nav-label text-[11px] uppercase tracking-widest font-semibold">Directives Library</span>
     </a>
-    <a href="#/compare" data-route="compare"
+    <a href="#/compare" data-route="compare" aria-label="Comparison Tool"
        class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200">
-      <span class="material-symbols-outlined">compare_arrows</span>
+      <span class="material-symbols-outlined" aria-hidden="true">compare_arrows</span>
       <span class="nav-label text-[11px] uppercase tracking-widest font-semibold">Comparison Tool</span>
     </a>
-    <a href="#/gaps" data-route="gaps"
+    <a href="#/gaps" data-route="gaps" aria-label="Gap Analysis"
        class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200">
-      <span class="material-symbols-outlined">analytics</span>
+      <span class="material-symbols-outlined" aria-hidden="true">analytics</span>
       <span class="nav-label text-[11px] uppercase tracking-widest font-semibold">Gap Analysis</span>
     </a>
-    <a href="#/history" data-route="history"
+    <a href="#/history" data-route="history" aria-label="History"
        class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200">
-      <span class="material-symbols-outlined">history</span>
+      <span class="material-symbols-outlined" aria-hidden="true">history</span>
       <span class="nav-label text-[11px] uppercase tracking-widest font-semibold">History</span>
     </a>
   </nav>
@@ -236,34 +425,35 @@
   </div>
 
   <!-- Footer Links -->
-  <div class="px-4 pt-4 space-y-1" style="border-top: 1px solid rgba(196,198,209,0.15);">
-    <a href="#" class="flex items-center gap-3 px-4 py-2 text-outline hover:text-primary transition-colors">
-      <span class="material-symbols-outlined text-sm">help</span>
+  <div class="px-4 pt-4 space-y-1 bg-surface-container/30">
+    <a href="#" class="flex items-center gap-3 px-4 py-2 text-outline hover:text-primary transition-colors" aria-label="Support">
+      <span class="material-symbols-outlined text-sm" aria-hidden="true">help</span>
       <span class="sidebar-footer-label text-[10px] uppercase tracking-wider font-bold">Support</span>
     </a>
-    <a href="#" class="flex items-center gap-3 px-4 py-2 text-outline hover:text-primary transition-colors">
-      <span class="material-symbols-outlined text-sm">admin_panel_settings</span>
+    <a href="#" class="flex items-center gap-3 px-4 py-2 text-outline hover:text-primary transition-colors" aria-label="Archive Settings">
+      <span class="material-symbols-outlined text-sm" aria-hidden="true">admin_panel_settings</span>
       <span class="sidebar-footer-label text-[10px] uppercase tracking-wider font-bold">Archive Settings</span>
     </a>
   </div>
 </aside>
 
 <!-- MAIN CONTENT AREA -->
-<main id="main-content" class="ml-64 min-h-screen flex flex-col">
+<main id="main-content" role="main" class="ml-64 min-h-screen flex flex-col">
 
   <!-- TOP APP BAR -->
-  <header class="sticky top-0 z-30 bg-surface flex justify-between items-center w-full px-8 py-4">
+  <header role="banner" class="sticky top-0 z-30 bg-surface flex justify-between items-center w-full px-8 py-4">
     <!-- Mobile menu button -->
     <button id="mobile-menu-btn" class="hidden items-center justify-center p-2 mr-4 text-primary rounded-xl hover:bg-surface-container transition-colors"
-            onclick="document.getElementById('sidebar').classList.toggle('!block')">
-      <span class="material-symbols-outlined">menu</span>
+            aria-label="Toggle navigation menu" aria-expanded="false"
+            onclick="toggleMobileMenu()">
+      <span class="material-symbols-outlined" aria-hidden="true">menu</span>
     </button>
 
     <!-- Search -->
     <div class="flex items-center flex-1 max-w-xl">
       <div class="relative w-full">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-        <input type="text"
+        <input type="text" aria-label="Search archive directives" role="searchbox"
                class="w-full pl-10 pr-4 py-2 bg-surface-container-highest rounded-xl text-sm ghost-border focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-outline-variant"
                placeholder="Search archive directives...">
       </div>
@@ -276,10 +466,13 @@
         <a href="#" class="text-outline font-medium hover:text-primary transition-colors text-sm">DOE Orders</a>
         <a href="#" class="text-outline font-medium hover:text-primary transition-colors text-sm">Manuals</a>
       </div>
-      <div class="flex items-center gap-4" style="border-left: 1px solid rgba(196,198,209,0.15); padding-left: 2rem;">
-        <button class="p-2 text-outline hover:bg-surface-container rounded-full transition-colors relative" aria-label="Notifications">
-          <span class="material-symbols-outlined">notifications</span>
-          <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+      <div class="flex items-center gap-4 pl-8 ml-4 bg-surface-container-low/30 rounded-full py-1 px-4">
+        <button class="p-2 text-outline hover:bg-surface-container rounded-full transition-colors relative" aria-label="Notifications — new alerts available">
+          <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface" aria-hidden="true"></span>
+        </button>
+        <button id="dark-mode-toggle" class="p-2 text-outline hover:bg-surface-container rounded-full transition-colors" aria-label="Toggle dark mode" onclick="toggleDarkMode()">
+          <span class="material-symbols-outlined" id="dark-mode-icon">dark_mode</span>
         </button>
         <button class="p-2 text-outline hover:bg-surface-container rounded-full transition-colors" aria-label="Settings">
           <span class="material-symbols-outlined">settings</span>
@@ -290,23 +483,24 @@
   </header>
 
   <!-- PAGE CONTENT -->
-  <div id="app" class="flex-1"></div>
+  <div id="app" class="flex-1" role="region" aria-label="Page content" aria-live="polite"></div>
 
 </main>
 
 <!-- FLOATING ACTION TOOLBAR -->
-<div id="fab-toolbar" class="fixed bottom-8 right-8 z-50">
+<div id="fab-toolbar" class="fixed bottom-8 right-8 z-50" role="toolbar" aria-label="Quick actions">
   <div class="glass-panel flex items-center gap-2 p-2 rounded-full shadow-ambient-lg ghost-border">
-    <button onclick="window.location.hash='#/compare'" class="p-3 bg-surface hover:bg-surface-container text-primary rounded-full transition-all" title="Add Document">
-      <span class="material-symbols-outlined">add</span>
+    <button onclick="window.location.hash='#/compare'" class="p-3 bg-surface hover:bg-surface-container text-primary rounded-full transition-all" aria-label="Add document">
+      <span class="material-symbols-outlined" aria-hidden="true">add</span>
     </button>
-    <button class="p-3 bg-surface hover:bg-surface-container text-primary rounded-full transition-all" title="Export PDF">
-      <span class="material-symbols-outlined">picture_as_pdf</span>
+    <button onclick="exportCurrentPdf()" class="p-3 bg-surface hover:bg-surface-container text-primary rounded-full transition-all" aria-label="Export PDF">
+      <span class="material-symbols-outlined" aria-hidden="true">picture_as_pdf</span>
     </button>
-    <div class="w-[1px] h-6 bg-outline/20 mx-1"></div>
+    <div class="w-[1px] h-6 bg-outline/20 mx-1" aria-hidden="true"></div>
     <button onclick="window.location.hash='#/compare'"
-            class="p-3 bg-secondary text-on-secondary rounded-full shadow-lg hover:shadow-secondary/40 transition-all font-black flex items-center gap-2 px-6">
-      <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">compare_arrows</span>
+            class="p-3 bg-secondary text-on-secondary rounded-full shadow-lg hover:shadow-secondary/40 transition-all font-black flex items-center gap-2 px-6"
+            aria-label="Start new comparison">
+      <span class="material-symbols-outlined text-xl" aria-hidden="true" style="font-variation-settings: 'FILL' 1;">compare_arrows</span>
       <span class="text-xs uppercase tracking-widest">Compare</span>
     </button>
   </div>
@@ -314,6 +508,26 @@
 
 <!-- APPLICATION JAVASCRIPT -->
 <script>
+// ── Dark Mode ──
+function initDarkMode() {
+  var saved = localStorage.getItem('darkMode');
+  if (saved === 'true' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+  updateDarkModeIcon();
+}
+function toggleDarkMode() {
+  document.documentElement.classList.toggle('dark');
+  var isDark = document.documentElement.classList.contains('dark');
+  localStorage.setItem('darkMode', isDark);
+  updateDarkModeIcon();
+}
+function updateDarkModeIcon() {
+  var icon = document.getElementById('dark-mode-icon');
+  if (icon) icon.textContent = document.documentElement.classList.contains('dark') ? 'light_mode' : 'dark_mode';
+}
+initDarkMode();
+
 // Shared State
 var AppState = {
   selectedDirectives: [],
@@ -337,6 +551,11 @@ function navigate() {
   var container = document.getElementById('app');
   var matched = false;
 
+  // Clean up overlays and observers on navigation
+  if (_notesPanel) { _notesPanel.remove(); _notesPanel = null; }
+  for (var i = 0; i < _syncObservers.length; i++) { _syncObservers[i].disconnect(); }
+  _syncObservers = [];
+
   // Restore FAB toolbar visibility when navigating away from comparison view
   var fab = document.getElementById('fab-toolbar');
   if (fab) fab.style.display = '';
@@ -349,6 +568,8 @@ function navigate() {
       updateActiveNav(route.name);
       route.render(container, m[1], m[2]);
       matched = true;
+      // Announce route change to screen readers
+      announceRouteChange(route.name);
       break;
     }
   }
@@ -356,6 +577,26 @@ function navigate() {
   if (!matched) {
     window.location.hash = '#/dashboard';
   }
+}
+
+function announceRouteChange(routeName) {
+  var names = {
+    dashboard: 'Dashboard',
+    library: 'Directives Library',
+    compare: 'Comparison Tool',
+    gaps: 'Gap Analysis',
+    history: 'Comparison History',
+  };
+  var announcer = document.getElementById('sr-announcer');
+  if (announcer) announcer.textContent = 'Navigated to ' + (names[routeName] || routeName);
+}
+
+function toggleMobileMenu() {
+  var sidebar = document.getElementById('sidebar');
+  var btn = document.getElementById('mobile-menu-btn');
+  if (!sidebar) return;
+  var isVisible = sidebar.classList.toggle('!block');
+  if (btn) btn.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
 }
 
 function updateActiveNav(routeName) {
@@ -385,22 +626,25 @@ function skeletonBlock(h, w) {
 }
 
 // ── VIEW: DASHBOARD ──
+var _dashboardData = null;
+var _dashboardFilter = 'all'; // 'all', 'doe', 'netl'
+
 function renderDashboard(container) {
   container.innerHTML = '\
   <div class="p-8 space-y-12">\
     <section>\
       <div class="flex items-baseline justify-between mb-6">\
         <h2 class="text-3xl font-black tracking-headline text-primary">Directive Overview</h2>\
-        <span class="text-xs uppercase tracking-label text-outline font-bold">Last sync: \u2014</span>\
+        <span class="text-xs uppercase tracking-label text-outline font-bold" id="dash-sync-label">Loading...</span>\
       </div>\
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">\
         <div class="p-6 bg-surface-container rounded-xl flex flex-col justify-between h-40 hover:bg-surface-container-highest transition-colors cursor-default">\
           <div class="flex justify-between items-start">\
             <span class="material-symbols-outlined text-primary text-3xl">compare</span>\
-            <span class="text-secondary font-bold text-sm bg-secondary-container px-2 py-1 rounded-xl">\u2014</span>\
+            <span class="text-secondary font-bold text-sm bg-secondary-container px-2 py-1 rounded-xl" id="dash-trend"></span>\
           </div>\
           <div>\
-            <p class="text-4xl font-black text-primary">\u2014</p>\
+            <p class="text-4xl font-black text-primary" id="dash-pending">\u2014</p>\
             <p class="text-[10px] uppercase tracking-widest font-bold text-outline">Pending Comparisons</p>\
           </div>\
         </div>\
@@ -410,7 +654,7 @@ function renderDashboard(container) {
             <span class="text-on-primary font-bold text-sm bg-white/10 px-2 py-1 rounded-xl">Critical</span>\
           </div>\
           <div>\
-            <p class="text-4xl font-black">\u2014</p>\
+            <p class="text-4xl font-black" id="dash-gaps">0</p>\
             <p class="text-[10px] uppercase tracking-widest font-bold text-on-primary/70">Recent Gaps Found</p>\
           </div>\
         </div>\
@@ -419,7 +663,7 @@ function renderDashboard(container) {
             <span class="material-symbols-outlined text-primary text-3xl">edit_note</span>\
           </div>\
           <div>\
-            <p class="text-4xl font-black text-primary">\u2014</p>\
+            <p class="text-4xl font-black text-primary" id="dash-edits">0</p>\
             <p class="text-[10px] uppercase tracking-widest font-bold text-outline">In-Progress Edits</p>\
           </div>\
         </div>\
@@ -428,7 +672,7 @@ function renderDashboard(container) {
             <span class="material-symbols-outlined text-primary text-3xl">verified</span>\
           </div>\
           <div>\
-            <p class="text-4xl font-black text-primary">\u2014</p>\
+            <p class="text-4xl font-black text-primary" id="dash-validated">0</p>\
             <p class="text-[10px] uppercase tracking-widest font-bold text-outline">Total Validated</p>\
           </div>\
         </div>\
@@ -438,27 +682,22 @@ function renderDashboard(container) {
       <section class="lg:col-span-8 space-y-6">\
         <div class="flex items-center justify-between">\
           <h3 class="text-xl font-bold text-primary">Recent Documents</h3>\
-          <div class="flex bg-surface-container-low p-1 rounded-full">\
-            <button class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-surface-container-lowest shadow-sm rounded-full">All Sources</button>\
-            <button class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline">DOE Only</button>\
-            <button class="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline">NETL Only</button>\
+          <div class="flex bg-surface-container-low p-1 rounded-full" id="dash-filter-bar">\
+            <button data-filter="all" class="dash-filter px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-surface-container-lowest shadow-sm rounded-full">All Sources</button>\
+            <button data-filter="doe" class="dash-filter px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline rounded-full">DOE Only</button>\
+            <button data-filter="netl" class="dash-filter px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline rounded-full">NETL Only</button>\
           </div>\
         </div>\
         <div class="space-y-4" id="dashboard-documents">\
-          <div class="p-6 bg-surface-container-lowest rounded-xl text-center text-outline">\
-            <span class="material-symbols-outlined text-4xl mb-2 block">folder_open</span>\
-            <p class="font-semibold">No documents yet</p>\
-            <p class="text-sm mt-1">Upload your first pair of directives to get started.</p>\
-            <a href="#/compare" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">Start Comparison</a>\
-          </div>\
+          ' + skeletonBlock('h-20', 'w-full') + skeletonBlock('h-20', 'w-full') + skeletonBlock('h-20', 'w-full') + '\
         </div>\
       </section>\
       <section class="lg:col-span-4 space-y-8">\
         <div class="bg-surface-container-highest rounded-2xl p-8 relative overflow-hidden">\
           <div class="relative z-10">\
             <h3 class="text-xl font-black text-primary mb-2">Review Velocity</h3>\
-            <p class="text-sm text-on-surface-variant mb-6 leading-body">Comparison completion rate data will appear here as you review directives.</p>\
-            <div class="flex items-end gap-2 h-24 mb-6">\
+            <p class="text-sm text-on-surface-variant mb-6 leading-body" id="dash-velocity-desc">Loading velocity data...</p>\
+            <div class="flex items-end gap-2 h-24 mb-6" id="dash-velocity-bars">\
               <div class="w-full bg-primary/10 rounded-t h-8"></div>\
               <div class="w-full bg-primary/15 rounded-t h-12"></div>\
               <div class="w-full bg-primary/10 rounded-t h-10"></div>\
@@ -467,10 +706,10 @@ function renderDashboard(container) {
               <div class="w-full bg-primary/25 rounded-t h-20"></div>\
               <div class="w-full bg-primary/15 rounded-t h-14"></div>\
             </div>\
-            <button class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">\
+            <a href="#/history" class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">\
               View Full Analytics\
               <span class="material-symbols-outlined text-sm">arrow_forward</span>\
-            </button>\
+            </a>\
           </div>\
           <div class="absolute -right-12 -top-12 w-48 h-48 bg-secondary/10 rounded-full blur-3xl"></div>\
         </div>\
@@ -481,43 +720,530 @@ function renderDashboard(container) {
       </section>\
     </div>\
   </div>';
+
+  // Set up filter buttons
+  var filterBar = document.getElementById('dash-filter-bar');
+  if (filterBar) {
+    filterBar.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-filter]');
+      if (!btn) return;
+      _dashboardFilter = btn.dataset.filter;
+      // Update button styles
+      var btns = filterBar.querySelectorAll('.dash-filter');
+      for (var i = 0; i < btns.length; i++) {
+        if (btns[i].dataset.filter === _dashboardFilter) {
+          btns[i].className = 'dash-filter px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-surface-container-lowest shadow-sm rounded-full';
+        } else {
+          btns[i].className = 'dash-filter px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline rounded-full';
+        }
+      }
+      if (_dashboardData) renderDashboardDocuments(_dashboardData.recent_documents);
+    });
+  }
+
+  // Fetch dashboard data
+  loadDashboardData();
 }
 
-// ── VIEW: DIRECTIVES LIBRARY (Placeholder) ──
+function loadDashboardData() {
+  fetch('/api/dashboard')
+    .then(function(res) { return res.ok ? res.json() : null; })
+    .then(function(data) {
+      if (!data) return;
+      _dashboardData = data;
+
+      // Metric cards
+      var pendingEl = document.getElementById('dash-pending');
+      var gapsEl = document.getElementById('dash-gaps');
+      var editsEl = document.getElementById('dash-edits');
+      var validatedEl = document.getElementById('dash-validated');
+      var trendEl = document.getElementById('dash-trend');
+      var syncEl = document.getElementById('dash-sync-label');
+
+      if (pendingEl) pendingEl.textContent = String(data.pending_comparisons).padStart(2, '0');
+      if (gapsEl) gapsEl.textContent = String(data.recent_gaps_found).padStart(2, '0');
+      if (editsEl) editsEl.textContent = String(data.in_progress_edits).padStart(2, '0');
+      if (validatedEl) validatedEl.textContent = String(data.total_validated).padStart(2, '0');
+      if (trendEl) {
+        var pct = data.review_velocity.change_pct;
+        trendEl.textContent = (pct > 0 ? '+' : '') + pct + '%';
+      }
+      if (syncEl) syncEl.textContent = 'Last sync: just now';
+
+      // Review velocity
+      var velDesc = document.getElementById('dash-velocity-desc');
+      if (velDesc) {
+        var v = data.review_velocity;
+        if (v.current_month > 0) {
+          velDesc.textContent = v.current_month + ' comparisons completed. Rate changed by ' + v.change_pct + '% this month.';
+        } else {
+          velDesc.textContent = 'No comparisons completed yet. Start your first review above.';
+        }
+      }
+
+      // Velocity bars — scale to data
+      var barsEl = document.getElementById('dash-velocity-bars');
+      if (barsEl && data.total_reports > 0) {
+        var count = data.total_reports;
+        // Generate 7 pseudo-bars based on total count
+        var heights = [30, 50, 40, 65, 35, 80, count > 3 ? 96 : 55];
+        var opacities = [0.2, 0.4, 0.2, 0.6, 0.3, 1, 0.5];
+        var barsHtml = '';
+        for (var b = 0; b < 7; b++) {
+          barsHtml += '<div class="w-full rounded-t transition-all duration-700" style="height:' + heights[b] + '%;background:rgba(0,25,60,' + opacities[b] + ')"></div>';
+        }
+        barsEl.innerHTML = barsHtml;
+      }
+
+      // Documents
+      renderDashboardDocuments(data.recent_documents);
+    })
+    .catch(function() {
+      var syncEl = document.getElementById('dash-sync-label');
+      if (syncEl) syncEl.textContent = 'Last sync: error';
+      renderDashboardDocuments([]);
+    });
+}
+
+function renderDashboardDocuments(docs) {
+  var target = document.getElementById('dashboard-documents');
+  if (!target) return;
+
+  // Apply filter
+  var filtered = (docs || []).filter(function(d) {
+    if (_dashboardFilter === 'all') return true;
+    return d.type === _dashboardFilter;
+  });
+
+  if (!filtered.length) {
+    target.innerHTML = '\
+      <div class="p-6 bg-surface-container-lowest rounded-xl text-center text-outline">\
+        <span class="material-symbols-outlined text-4xl mb-2 block">folder_open</span>\
+        <p class="font-semibold">No documents yet</p>\
+        <p class="text-sm mt-1">Upload your first pair of directives to get started.</p>\
+        <a href="#/compare" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">Start Comparison</a>\
+      </div>';
+    return;
+  }
+
+  var html = '';
+  for (var i = 0; i < filtered.length; i++) {
+    var doc = filtered[i];
+    var isNetl = doc.type === 'netl';
+    var badgeBg = isNetl ? 'bg-primary text-on-primary' : 'bg-tertiary text-on-tertiary';
+    var icon = isNetl ? 'description' : 'gavel';
+    var iconBg = isNetl ? 'bg-surface-container' : 'bg-surface-container-highest';
+    var iconColor = isNetl ? 'text-primary/40' : 'text-tertiary/40';
+
+    var statusLabel = '';
+    var statusColor = '';
+    if (doc.status === 'active') { statusLabel = 'Active'; statusColor = 'text-secondary'; }
+    else if (doc.status === 'gap_detected') { statusLabel = 'Gap Detected'; statusColor = 'text-error'; }
+    else { statusLabel = 'Review Pending'; statusColor = 'text-outline'; }
+
+    var rowBg = i % 2 === 0 ? 'bg-surface-container-lowest' : 'bg-surface-container';
+
+    html += '<a href="#/compare/' + escapeHtml(doc.id) + '" class="block p-5 ' + rowBg + ' rounded-xl flex items-center gap-6 group hover:shadow-xl hover:shadow-primary/5 transition-all">';
+    html += '<div class="w-12 h-16 ' + iconBg + ' flex items-center justify-center rounded">';
+    html += '<span class="material-symbols-outlined ' + iconColor + '">' + icon + '</span>';
+    html += '</div>';
+    html += '<div class="flex-1 min-w-0">';
+    html += '<div class="flex items-center gap-2 mb-1">';
+    html += '<span class="px-2 py-0.5 ' + badgeBg + ' text-[9px] font-bold uppercase tracking-tighter rounded">' + escapeHtml(doc.title) + '</span>';
+    html += '<span class="' + statusColor + ' font-bold text-[10px]">' + statusLabel + '</span>';
+    html += '</div>';
+    html += '<p class="text-sm text-outline-variant line-clamp-1">' + escapeHtml(doc.summary || '') + '</p>';
+    html += '</div>';
+    html += '</a>';
+  }
+
+  target.innerHTML = html;
+}
+
+// ── VIEW: DIRECTIVES LIBRARY ──
+var _libraryFilter = { source_type: 'all', status: '', sort: 'updated' };
+var _libraryDirectives = [];
+
 function renderLibrary(container) {
+  var selCount = AppState.selectedDirectives.length;
+  var compareDisabled = selCount < 2 ? 'disabled' : '';
   container.innerHTML = '\
   <div class="p-8 space-y-8">\
-    <div class="flex items-center justify-between">\
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">\
       <div>\
-        <h2 class="text-3xl font-black tracking-headline text-primary">Directives Library</h2>\
-        <p class="text-sm text-on-surface-variant mt-1 leading-body">Browse, search, and select directives for comparison analysis.</p>\
+        <div class="flex items-center gap-2 mb-2">\
+          <span class="inline-block w-2 h-8 bg-primary"></span>\
+          <h2 class="text-3xl font-black tracking-tight text-primary">Directives Library</h2>\
+        </div>\
+        <p class="text-on-surface-variant max-w-2xl leading-relaxed">\
+          Access and manage the authoritative repository of Department of Energy (DOE) Orders and NETL internal Directives. Select documents to analyze differences and compliance gaps.\
+        </p>\
       </div>\
       <div class="flex gap-3">\
-        <button class="px-4 py-2 bg-surface-container-highest rounded-xl text-sm font-bold text-primary ghost-border hover:bg-surface-container transition-colors">\
-          <span class="material-symbols-outlined text-sm align-middle mr-1">filter_list</span> Advanced Filters\
+        <button id="lib-adv-filters" class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-highest rounded-xl text-primary font-bold text-sm shadow-sm hover:bg-surface-container-high transition-colors">\
+          <span class="material-symbols-outlined text-sm">filter_list</span> Advanced Filters\
         </button>\
-        <button class="px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity" disabled>\
-          Compare Selected (0)\
+        <button id="lib-compare-btn" class="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm shadow-lg hover:opacity-90 transition-transform active:scale-95" ' + compareDisabled + '>\
+          <span class="material-symbols-outlined text-sm">compare</span>\
+          Compare Selected (<span id="lib-sel-count">' + selCount + '</span>)\
         </button>\
       </div>\
     </div>\
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">\
-      <select class="bg-surface-container-highest rounded-xl px-4 py-2 text-sm ghost-border focus:ring-2 focus:ring-primary"><option>All Departments</option></select>\
-      <div class="flex bg-surface-container-low p-1 rounded-full">\
-        <button class="flex-1 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-surface-container-lowest shadow-sm rounded-full">All</button>\
-        <button class="flex-1 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline">DOE</button>\
-        <button class="flex-1 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-outline">NETL</button>\
+    <div id="lib-filter-bar" class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-surface-container-low rounded-2xl">\
+      <div class="space-y-1.5">\
+        <label class="block text-[10px] font-black uppercase tracking-wider text-outline px-1">Department</label>\
+        <select class="w-full bg-surface-container-lowest border-none rounded-lg text-sm focus:ring-primary/20">\
+          <option>All Departments</option>\
+          <option>Cybersecurity</option>\
+          <option>Environmental Policy</option>\
+          <option>Procurement</option>\
+          <option>Safety &amp; Health</option>\
+        </select>\
       </div>\
-      <select class="bg-surface-container-highest rounded-xl px-4 py-2 text-sm ghost-border focus:ring-2 focus:ring-primary"><option>Current Only</option><option>Draft</option><option>Archived</option></select>\
-      <select class="bg-surface-container-highest rounded-xl px-4 py-2 text-sm ghost-border focus:ring-2 focus:ring-primary"><option>Last Updated</option><option>Alphabetical</option></select>\
+      <div class="space-y-1.5">\
+        <label class="block text-[10px] font-black uppercase tracking-wider text-outline px-1">Source Type</label>\
+        <div id="lib-source-toggle" class="flex p-1 bg-surface-container rounded-lg gap-1">\
+          <button data-source="all" class="flex-1 py-1 text-xs font-bold rounded ' + (_libraryFilter.source_type === 'all' ? 'bg-surface-container-lowest text-primary shadow-sm' : 'hover:bg-surface-container-highest text-outline transition-colors') + '">All</button>\
+          <button data-source="doe" class="flex-1 py-1 text-xs font-bold rounded ' + (_libraryFilter.source_type === 'doe' ? 'bg-surface-container-lowest text-primary shadow-sm' : 'hover:bg-surface-container-highest text-outline transition-colors') + '">DOE</button>\
+          <button data-source="netl" class="flex-1 py-1 text-xs font-bold rounded ' + (_libraryFilter.source_type === 'netl' ? 'bg-surface-container-lowest text-primary shadow-sm' : 'hover:bg-surface-container-highest text-outline transition-colors') + '">NETL</button>\
+        </div>\
+      </div>\
+      <div class="space-y-1.5">\
+        <label class="block text-[10px] font-black uppercase tracking-wider text-outline px-1">Status</label>\
+        <select id="lib-status-filter" class="w-full bg-surface-container-lowest border-none rounded-lg text-sm focus:ring-primary/20">\
+          <option value="">All Statuses</option>\
+          <option value="current">Current Only</option>\
+          <option value="gap_detected">Gap Detected</option>\
+          <option value="review_pending">Review Pending</option>\
+        </select>\
+      </div>\
+      <div class="space-y-1.5">\
+        <label class="block text-[10px] font-black uppercase tracking-wider text-outline px-1">Sort By</label>\
+        <select id="lib-sort" class="w-full bg-surface-container-lowest border-none rounded-lg text-sm focus:ring-primary/20">\
+          <option value="updated">Last Updated</option>\
+          <option value="alpha">Alphabetical</option>\
+        </select>\
+      </div>\
     </div>\
-    <div class="p-12 bg-surface-container-lowest rounded-xl text-center text-outline">\
-      <span class="material-symbols-outlined text-5xl mb-3 block">library_books</span>\
-      <p class="font-bold text-lg text-primary">No directives cataloged yet</p>\
-      <p class="text-sm mt-2 leading-body">Directives will appear here after you run your first comparison.</p>\
-      <a href="#/compare" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">Upload Directives</a>\
+    <div id="lib-grid" class="grid grid-cols-1 md:grid-cols-12 gap-6">\
+      ' + skeletonBlock('h-[400px]', 'md:col-span-8') + '\
+      ' + skeletonBlock('h-[400px]', 'md:col-span-4') + '\
+      ' + skeletonBlock('h-48', 'md:col-span-4') + '\
+      ' + skeletonBlock('h-48', 'md:col-span-4') + '\
+      ' + skeletonBlock('h-48', 'md:col-span-4') + '\
+    </div>\
+    <div id="lib-utility" class="grid grid-cols-1 md:grid-cols-12 gap-6 mt-4">\
+      <div class="md:col-span-3 bg-surface-container-low rounded-3xl p-8">\
+        <h3 class="text-lg font-black text-primary mb-4 tracking-tight">Archive Stats</h3>\
+        <div class="space-y-6">\
+          <div>\
+            <span id="lib-stat-total" class="text-4xl font-black text-primary">—</span>\
+            <p class="text-xs text-outline font-bold uppercase tracking-widest mt-1">Total Documents</p>\
+          </div>\
+          <div>\
+            <span id="lib-stat-gaps" class="text-4xl font-black text-error">—</span>\
+            <p class="text-xs text-outline font-bold uppercase tracking-widest mt-1">Gaps Detected</p>\
+          </div>\
+          <div class="pt-4">\
+            <div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">\
+              <div id="lib-stat-bar" class="bg-primary h-full w-0 transition-all duration-700"></div>\
+            </div>\
+            <p id="lib-stat-pct" class="text-[10px] text-outline-variant mt-2">—</p>\
+          </div>\
+        </div>\
+      </div>\
+      <div class="md:col-span-9 bg-[#00193c] text-white rounded-3xl p-8 relative overflow-hidden group">\
+        <div class="absolute right-0 bottom-0 opacity-10 transform translate-x-10 translate-y-10 group-hover:scale-110 transition-transform duration-700">\
+          <span class="material-symbols-outlined text-[300px]">compare_arrows</span>\
+        </div>\
+        <div class="relative z-10 max-w-xl">\
+          <h3 class="text-3xl font-black mb-4 tracking-tight">Intelligent Comparison Engine</h3>\
+          <p class="text-blue-200 text-lg mb-8 leading-relaxed">\
+            Our engine automatically identifies text differences and compliance gaps between DOE federal orders and NETL laboratory-specific directives.\
+          </p>\
+          <div class="flex gap-4">\
+            <a href="#/compare" class="px-8 py-4 bg-secondary-container text-on-secondary-container rounded-xl font-black text-sm hover:scale-105 transition-all inline-block">Launch Compare</a>\
+            <button class="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl font-bold text-sm transition-all">Watch Tutorial</button>\
+          </div>\
+        </div>\
+      </div>\
     </div>\
   </div>';
+
+  // Load data
+  _loadLibraryData();
+
+  // Set up filter interactions
+  _initLibraryFilters();
+}
+
+function _loadLibraryData() {
+  var qs = '?source_type=' + _libraryFilter.source_type;
+  if (_libraryFilter.status) qs += '&status=' + _libraryFilter.status;
+  if (_libraryFilter.sort) qs += '&sort=' + _libraryFilter.sort;
+
+  fetch('/api/directives' + qs)
+    .then(function(res) { return res.ok ? res.json() : []; })
+    .then(function(data) {
+      _libraryDirectives = data || [];
+      _renderLibraryGrid(_libraryDirectives);
+      _updateLibraryStats(_libraryDirectives);
+    })
+    .catch(function() {
+      _renderLibraryEmpty();
+    });
+}
+
+function _renderLibraryGrid(directives) {
+  var grid = document.getElementById('lib-grid');
+  if (!grid) return;
+
+  if (!directives.length) {
+    _renderLibraryEmpty();
+    return;
+  }
+
+  var html = '';
+  for (var i = 0; i < directives.length; i++) {
+    var d = directives[i];
+    var isSelected = AppState.selectedDirectives.indexOf(d.directive_id) !== -1;
+
+    if (i === 0) {
+      // Featured card (large, 8-col)
+      html += _renderFeaturedCard(d, isSelected);
+    } else if (i === 1) {
+      // Secondary card (4-col)
+      html += _renderSecondaryCard(d, isSelected);
+    } else {
+      // Standard grid card (4-col)
+      html += _renderStandardCard(d, isSelected);
+    }
+  }
+
+  grid.innerHTML = html;
+}
+
+function _renderFeaturedCard(d, isSelected) {
+  var typeBadge = d.type === 'doe'
+    ? '<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold uppercase rounded-full tracking-tighter">DOE Order</span>'
+    : '<span class="px-3 py-1 bg-primary text-on-primary text-[10px] font-bold uppercase rounded-full tracking-tighter">NETL Directive</span>';
+  var statusBadge = _statusBadge(d.status);
+  var selClass = isSelected ? 'ring-2 ring-primary' : '';
+  var selLabel = isSelected ? 'Selected' : 'Select';
+
+  return '<div class="md:col-span-8 group relative bg-surface-container rounded-3xl overflow-hidden p-8 flex flex-col justify-between min-h-[400px] ' + selClass + '">\
+    <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>\
+    <div class="flex justify-between items-start">\
+      <div class="flex gap-2">' + typeBadge + statusBadge + '</div>\
+      <button class="lib-select-btn w-10 h-10 rounded-full ' + (isSelected ? 'bg-primary text-on-primary' : 'bg-white/50 backdrop-blur-sm hover:bg-primary hover:text-white') + ' flex items-center justify-center transition-all shadow-sm" data-directive-id="' + escapeHtml(d.directive_id) + '">\
+        <span class="material-symbols-outlined text-sm">' + (isSelected ? 'check' : 'add') + '</span>\
+      </button>\
+    </div>\
+    <div class="relative z-10">\
+      <h3 class="text-4xl font-black text-primary mb-4 leading-tight tracking-tight">' + escapeHtml(d.title) + '</h3>\
+      <p class="text-on-surface-variant text-lg max-w-xl mb-8 leading-relaxed line-clamp-3">' + escapeHtml(d.summary || 'No summary available.') + '</p>\
+      <div class="flex items-center gap-6">\
+        <div class="flex flex-col">\
+          <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Sections</span>\
+          <span class="text-sm font-bold">' + (d.section_count || '—') + '</span>\
+        </div>\
+        <div class="w-px h-8 bg-outline-variant/30"></div>\
+        <div class="flex flex-col">\
+          <span class="text-[10px] font-bold text-outline uppercase tracking-wider">Type</span>\
+          <span class="text-sm font-bold uppercase">' + escapeHtml(d.type) + '</span>\
+        </div>\
+        <div class="w-px h-8 bg-outline-variant/30"></div>\
+        <a href="#/compare/' + escapeHtml(d.job_id) + '" class="ml-auto px-6 py-3 bg-white text-primary rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.98]">View Comparison</a>\
+      </div>\
+    </div>\
+  </div>';
+}
+
+function _renderSecondaryCard(d, isSelected) {
+  var typeBadge = d.type === 'doe'
+    ? '<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold uppercase rounded-full tracking-tighter">DOE Order</span>'
+    : '<span class="px-3 py-1 bg-primary text-on-primary text-[10px] font-bold uppercase rounded-full tracking-tighter">NETL</span>';
+  var selClass = isSelected ? 'ring-2 ring-primary' : '';
+  var dateStr = d.last_modified ? new Date(d.last_modified).toLocaleDateString() : '';
+
+  return '<div class="md:col-span-4 bg-surface-container-highest rounded-3xl p-6 flex flex-col justify-between ' + selClass + '">\
+    <div class="space-y-4">\
+      <div class="flex justify-between items-center">' + typeBadge + '\
+        <span class="text-xs text-outline font-medium">' + escapeHtml(dateStr) + '</span>\
+      </div>\
+      <h4 class="text-xl font-bold text-primary leading-snug">' + escapeHtml(d.title) + '</h4>\
+      <p class="text-sm text-on-surface-variant leading-relaxed line-clamp-3">' + escapeHtml(d.summary || '') + '</p>\
+    </div>\
+    <div class="mt-6 pt-6 flex gap-2">\
+      <button class="lib-select-btn flex-1 py-3 ' + (isSelected ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest text-primary ghost-border hover:bg-surface') + ' font-bold text-xs rounded-xl transition-colors" data-directive-id="' + escapeHtml(d.directive_id) + '">' + (isSelected ? '✓ Selected' : 'Select to Compare') + '</button>\
+    </div>\
+  </div>';
+}
+
+function _renderStandardCard(d, isSelected) {
+  var icon = d.type === 'doe' ? 'gavel' : 'description';
+  var statusLabel = _statusLabel(d.status);
+  var statusColor = _statusLabelColor(d.status);
+  var selBorder = isSelected ? ' border-2 border-primary/30' : '';
+  var dateStr = d.last_modified ? new Date(d.last_modified).toLocaleDateString() : '';
+
+  return '<div class="md:col-span-4 bg-surface-container rounded-2xl p-6 hover:shadow-md transition-shadow cursor-pointer' + selBorder + '" onclick="toggleDirectiveSelection(\'' + escapeHtml(d.directive_id) + '\')">\
+    <div class="flex justify-between items-start mb-4">\
+      <span class="p-2 bg-surface-container-highest text-primary rounded-lg">\
+        <span class="material-symbols-outlined">' + icon + '</span>\
+      </span>\
+      <span class="text-[10px] font-bold uppercase tracking-wider ' + statusColor + '">' + escapeHtml(statusLabel) + '</span>\
+    </div>\
+    <h5 class="font-bold text-primary mb-2">' + escapeHtml(d.title) + '</h5>\
+    <p class="text-xs text-on-surface-variant mb-4 line-clamp-2">' + escapeHtml(d.summary || '') + '</p>\
+    <div class="text-[10px] font-bold text-outline flex justify-between">\
+      <span>' + (dateStr ? 'Last mod: ' + dateStr : '') + '</span>\
+      <span class="uppercase">' + escapeHtml(d.type) + '</span>\
+    </div>\
+  </div>';
+}
+
+function _statusBadge(status) {
+  if (status === 'current') return '<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase rounded-full tracking-tighter">Current</span>';
+  if (status === 'gap_detected') return '<span class="px-3 py-1 bg-error-container text-on-error-container text-[10px] font-bold uppercase rounded-full tracking-tighter">Gap Detected</span>';
+  if (status === 'review_pending') return '<span class="px-3 py-1 bg-surface-container-highest text-on-surface text-[10px] font-bold uppercase rounded-full tracking-tighter">Review Pending</span>';
+  return '';
+}
+
+function _statusLabel(status) {
+  if (status === 'current') return 'Approved';
+  if (status === 'gap_detected') return 'Gap Detected';
+  if (status === 'review_pending') return 'Pending Review';
+  return status;
+}
+
+function _statusLabelColor(status) {
+  if (status === 'current') return 'text-secondary';
+  if (status === 'gap_detected') return 'text-error';
+  if (status === 'review_pending') return 'text-outline';
+  return 'text-outline';
+}
+
+function _renderLibraryEmpty() {
+  var grid = document.getElementById('lib-grid');
+  if (!grid) return;
+  grid.innerHTML = '<div class="md:col-span-12 p-12 bg-surface-container-lowest rounded-xl text-center text-outline">\
+    <span class="material-symbols-outlined text-5xl mb-3 block">library_books</span>\
+    <p class="font-bold text-lg text-primary">No directives cataloged yet</p>\
+    <p class="text-sm mt-2 leading-relaxed">Directives will appear here after you run your first comparison.</p>\
+    <a href="#/compare" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">Upload Directives</a>\
+  </div>';
+}
+
+function _updateLibraryStats(directives) {
+  var total = directives.length;
+  var gaps = 0;
+  var current = 0;
+  for (var i = 0; i < directives.length; i++) {
+    if (directives[i].status === 'gap_detected') gaps++;
+    if (directives[i].status === 'current') current++;
+  }
+  var pct = total > 0 ? Math.round((current / total) * 100) : 0;
+
+  var elTotal = document.getElementById('lib-stat-total');
+  var elGaps = document.getElementById('lib-stat-gaps');
+  var elBar = document.getElementById('lib-stat-bar');
+  var elPct = document.getElementById('lib-stat-pct');
+  if (elTotal) elTotal.textContent = total;
+  if (elGaps) elGaps.textContent = gaps;
+  if (elBar) elBar.style.width = pct + '%';
+  if (elPct) elPct.textContent = pct + '% of directives are current';
+}
+
+function _initLibraryFilters() {
+  // Source type toggle
+  var toggle = document.getElementById('lib-source-toggle');
+  if (toggle) {
+    toggle.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-source]');
+      if (!btn) return;
+      _libraryFilter.source_type = btn.dataset.source;
+      _loadLibraryData();
+      // Update toggle styles
+      var btns = toggle.querySelectorAll('button');
+      for (var i = 0; i < btns.length; i++) {
+        if (btns[i].dataset.source === _libraryFilter.source_type) {
+          btns[i].className = 'flex-1 py-1 text-xs font-bold rounded bg-surface-container-lowest text-primary shadow-sm';
+        } else {
+          btns[i].className = 'flex-1 py-1 text-xs font-bold rounded hover:bg-surface-container-highest text-outline transition-colors';
+        }
+      }
+    });
+  }
+
+  // Status filter
+  var statusSel = document.getElementById('lib-status-filter');
+  if (statusSel) {
+    statusSel.value = _libraryFilter.status;
+    statusSel.addEventListener('change', function() {
+      _libraryFilter.status = statusSel.value;
+      _loadLibraryData();
+    });
+  }
+
+  // Sort
+  var sortSel = document.getElementById('lib-sort');
+  if (sortSel) {
+    sortSel.value = _libraryFilter.sort;
+    sortSel.addEventListener('change', function() {
+      _libraryFilter.sort = sortSel.value;
+      _loadLibraryData();
+    });
+  }
+
+  // Compare Selected button
+  var compareBtn = document.getElementById('lib-compare-btn');
+  if (compareBtn) {
+    compareBtn.addEventListener('click', function() {
+      if (AppState.selectedDirectives.length >= 2) {
+        window.location.hash = '#/compare';
+      }
+    });
+  }
+
+  // Delegate click on select buttons
+  var grid = document.getElementById('lib-grid');
+  if (grid) {
+    grid.addEventListener('click', function(e) {
+      var btn = e.target.closest('.lib-select-btn');
+      if (!btn) return;
+      e.stopPropagation();
+      var directiveId = btn.dataset.directiveId;
+      if (directiveId) toggleDirectiveSelection(directiveId);
+    });
+  }
+}
+
+function toggleDirectiveSelection(directiveId) {
+  var idx = AppState.selectedDirectives.indexOf(directiveId);
+  if (idx === -1) {
+    AppState.selectedDirectives.push(directiveId);
+  } else {
+    AppState.selectedDirectives.splice(idx, 1);
+  }
+  // Re-render grid to reflect selection state
+  _renderLibraryGrid(_libraryDirectives);
+  // Re-attach grid click handler
+  var grid = document.getElementById('lib-grid');
+  if (grid) {
+    grid.addEventListener('click', function(e) {
+      var btn = e.target.closest('.lib-select-btn');
+      if (!btn) return;
+      e.stopPropagation();
+      var directiveId = btn.dataset.directiveId;
+      if (directiveId) toggleDirectiveSelection(directiveId);
+    });
+  }
+  // Update button count
+  var countEl = document.getElementById('lib-sel-count');
+  var compareBtn = document.getElementById('lib-compare-btn');
+  if (countEl) countEl.textContent = AppState.selectedDirectives.length;
+  if (compareBtn) compareBtn.disabled = AppState.selectedDirectives.length < 2;
 }
 
 // ── VIEW: COMPARISON TOOL — Upload ──
@@ -531,17 +1257,17 @@ function renderCompareUpload(container) {
     <div id="upload-section" class="bg-surface-container-lowest rounded-xl p-8 ghost-border space-y-6">\
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">\
         <div>\
-          <label class="block font-bold text-sm text-primary mb-2">DOE Order <span class="font-normal text-outline text-xs">(parent directive)</span></label>\
+          <label for="doe-file" class="block font-bold text-sm text-primary mb-2">DOE Order <span class="font-normal text-outline text-xs">(parent directive)</span></label>\
           <div class="drop-zone border-2 border-dashed border-outline-variant/30 rounded-xl p-8 text-center cursor-pointer relative hover:border-primary/40 transition-colors" id="doe-drop">\
-            <input type="file" id="doe-file" accept=".pdf" class="absolute inset-0 opacity-0 cursor-pointer">\
+            <input type="file" id="doe-file" accept=".pdf" aria-label="Upload DOE Order PDF" class="absolute inset-0 opacity-0 cursor-pointer">\
             <span class="material-symbols-outlined text-3xl text-outline block mb-2">upload_file</span>\
             <p class="text-sm text-outline hint">Drop PDF here or click to browse</p>\
           </div>\
         </div>\
         <div>\
-          <label class="block font-bold text-sm text-primary mb-2">NETL Order <span class="font-normal text-outline text-xs">(site implementation)</span></label>\
+          <label for="netl-file" class="block font-bold text-sm text-primary mb-2">NETL Order <span class="font-normal text-outline text-xs">(site implementation)</span></label>\
           <div class="drop-zone border-2 border-dashed border-outline-variant/30 rounded-xl p-8 text-center cursor-pointer relative hover:border-primary/40 transition-colors" id="netl-drop">\
-            <input type="file" id="netl-file" accept=".pdf" class="absolute inset-0 opacity-0 cursor-pointer">\
+            <input type="file" id="netl-file" accept=".pdf" aria-label="Upload NETL Order PDF" class="absolute inset-0 opacity-0 cursor-pointer">\
             <span class="material-symbols-outlined text-3xl text-outline block mb-2">upload_file</span>\
             <p class="text-sm text-outline hint">Drop PDF here or click to browse</p>\
           </div>\
@@ -582,7 +1308,7 @@ function renderCompareJob(container, jobId) {
         </div>\
       </div>\
       <div class="flex items-center gap-3">\
-        <button class="px-4 py-2 text-sm font-bold text-primary hover:bg-surface-container-highest rounded-xl transition-colors flex items-center gap-2">\
+        <button onclick="exportPdf(\'' + escapeHtml(jobId) + '\')" class="px-4 py-2 text-sm font-bold text-primary hover:bg-surface-container-highest rounded-xl transition-colors flex items-center gap-2">\
           <span class="material-symbols-outlined text-sm">file_download</span> Export PDF\
         </button>\
         <a href="#/gaps/' + escapeHtml(jobId) + '" class="px-5 py-2 text-sm font-bold bg-primary text-on-primary rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2">\
@@ -593,7 +1319,7 @@ function renderCompareJob(container, jobId) {
     <!-- 3-Panel Comparison Workspace -->\
     <div class="flex-1 flex overflow-hidden">\
       <!-- Left Panel: DOE Order -->\
-      <section id="doe-panel" class="flex-1 flex flex-col bg-surface" style="border-right: 1px solid rgba(196,198,209,0.1);">\
+      <section id="doe-panel" class="flex-1 flex flex-col bg-surface">\
         <div class="p-6 pb-2 shrink-0">\
           <div class="flex items-center justify-between mb-2">\
             <span class="px-2 py-0.5 bg-tertiary-container text-on-tertiary-container text-[10px] font-black uppercase rounded tracking-widest">DOE Source</span>\
@@ -662,7 +1388,7 @@ function renderCompareJob(container, jobId) {
         <span class="text-sm font-bold tracking-tight">AI Reconciliation</span>\
       </button>\
       <div class="h-8 w-[1px] bg-outline/20 mx-2"></div>\
-      <button class="p-3 rounded-xl text-primary hover:bg-surface-container-highest transition-colors" title="Notes">\
+      <button class="p-3 rounded-xl text-primary hover:bg-surface-container-highest transition-colors" title="Notes" onclick="toggleNotesPanel()">\
         <span class="material-symbols-outlined">notes</span>\
       </button>\
       <button class="p-3 rounded-xl text-primary hover:bg-surface-container-highest transition-colors" title="Share">\
@@ -700,6 +1426,8 @@ function loadComparisonData(jobId) {
 
     renderSectionsPanel(sections);
     renderGapsPanel(gaps);
+    // Initialize synchronized scrolling between DOE and NETL panels
+    initSyncScroll();
   }).catch(function() {
     fetchAndRenderReportFallback(jobId);
   });
@@ -796,6 +1524,69 @@ function renderSectionsPanel(data) {
   }
 }
 
+// ── Synchronized Scrolling ──
+var _syncScrollEnabled = true;
+var _syncScrollLock = false;
+var _syncObservers = [];
+
+function initSyncScroll() {
+  // Disconnect previous observers to prevent leaks on re-navigation
+  for (var i = 0; i < _syncObservers.length; i++) {
+    _syncObservers[i].disconnect();
+  }
+  _syncObservers = [];
+
+  var doePanel = document.getElementById('doe-sections-list');
+  var netlPanel = document.getElementById('netl-sections-list');
+  if (!doePanel || !netlPanel) return;
+
+  _observePanel(doePanel, netlPanel);
+  _observePanel(netlPanel, doePanel);
+}
+
+function _observePanel(sourcePanel, targetPanel) {
+  var articles = sourcePanel.querySelectorAll('article[data-section-id]');
+  if (!articles.length) return;
+
+  var observer = new IntersectionObserver(function(entries) {
+    if (!_syncScrollEnabled || _syncScrollLock) return;
+
+    var best = null;
+    var bestRatio = 0;
+    for (var i = 0; i < entries.length; i++) {
+      if (entries[i].isIntersecting && entries[i].intersectionRatio > bestRatio) {
+        best = entries[i];
+        bestRatio = entries[i].intersectionRatio;
+      }
+    }
+
+    if (best) {
+      var sectionId = best.target.getAttribute('data-section-id');
+      if (sectionId) {
+        _syncScrollToSection(targetPanel, sectionId);
+      }
+    }
+  }, {
+    root: sourcePanel,
+    threshold: 0.5,
+  });
+
+  for (var i = 0; i < articles.length; i++) {
+    observer.observe(articles[i]);
+  }
+  _syncObservers.push(observer);
+}
+
+function _syncScrollToSection(panel, sectionId) {
+  var target = panel.querySelector('article[data-section-id="' + sectionId + '"]');
+  if (!target) return;
+
+  // Lock prevents the programmatic scroll from triggering the other panel's observer
+  _syncScrollLock = true;
+  target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  setTimeout(function() { _syncScrollLock = false; }, 600);
+}
+
 function renderGapsPanel(data) {
   // Metrics
   var discEl = document.getElementById('gap-discrepancies');
@@ -848,19 +1639,16 @@ function requestSuggestion(sectionId) {
 }
 
 function requestSuggestionForGap(gapId) {
-  if (!AppState.activeJob) {
-    // Try to extract from URL
-    var m = window.location.hash.match(/^#\/compare\/([a-f0-9]+)$/);
-    if (m) AppState.activeJob = m[1];
-  }
-  if (!AppState.activeJob) {
+  var jobId = _getActiveJobId();
+  if (!jobId) {
     showToast('No active job found.', 'error');
     return;
   }
+  AppState.activeJob = jobId;
 
   showToast('Generating AI suggestion...', 'info');
 
-  fetch('/api/report/' + encodeURIComponent(AppState.activeJob) + '/suggest', {
+  fetch('/api/report/' + encodeURIComponent(jobId) + '/suggest', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ gap_id: gapId, context: '' }),
@@ -881,6 +1669,9 @@ function requestSuggestionForGap(gapId) {
 function showSuggestionModal(text, rationale) {
   var overlay = document.createElement('div');
   overlay.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-black/30 backdrop-blur-sm';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-label', 'AI Suggestion');
   overlay.innerHTML = '\
     <div class="bg-surface rounded-2xl shadow-ambient-lg p-8 max-w-xl w-full mx-4 space-y-4">\
       <div class="flex items-center gap-2">\
@@ -903,6 +1694,10 @@ function showSuggestionModal(text, rationale) {
     overlay.remove();
   });
   overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+  overlay.addEventListener('keydown', function(e) { if (e.key === 'Escape') overlay.remove(); });
+  // Focus the first action button for keyboard users
+  var firstBtn = overlay.querySelector('#dismiss-suggestion');
+  if (firstBtn) firstBtn.focus();
 }
 
 function fetchAndRenderReportFallback(jobId) {
@@ -1021,22 +1816,497 @@ function buildReportHTML(report) {
   return html;
 }
 
-// ── VIEW: GAP ANALYSIS ──
+// ── VIEW: GAP ANALYSIS / EDITOR ──
+var _gapEditorState = { draft: null, gaps: null, report: null, dismissedGaps: {} };
+
 function renderGaps(container, jobId) {
+  AppState.activeJob = jobId;
+
+  // Shell with loading state
   container.innerHTML = '\
-  <div class="p-8 space-y-6">\
-    <div class="flex items-center gap-3">\
-      <a href="#/history" class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">arrow_back</span></a>\
-      <h2 class="text-2xl font-black tracking-headline text-primary">Gap Analysis</h2>\
-      <span class="px-3 py-1 bg-surface-container-highest rounded-xl text-xs font-mono text-outline">' + escapeHtml(jobId) + '</span>\
+  <div class="flex flex-col h-full overflow-hidden" id="gap-editor-root">\
+    <!-- Header -->\
+    <div class="px-8 py-5 flex items-center justify-between bg-surface-container-low shrink-0">\
+      <div>\
+        <nav class="flex items-center gap-2 mb-1">\
+          <a href="#/history" class="text-[10px] uppercase tracking-widest text-outline font-bold hover:text-primary transition-colors">Directives</a>\
+          <span class="material-symbols-outlined text-[14px] text-outline/40">chevron_right</span>\
+          <span class="text-[10px] uppercase tracking-widest text-outline font-bold" id="gap-breadcrumb">Loading...</span>\
+        </nav>\
+        <h2 class="text-2xl font-black text-primary tracking-tight" id="gap-title">Loading directive...</h2>\
+      </div>\
+      <div class="flex items-center gap-3">\
+        <div class="flex items-center bg-surface-container rounded-full px-1 py-1">\
+          <button class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-surface-container-lowest shadow-sm text-primary" id="gap-toggle-netl">NETL Source</button>\
+          <button class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-outline hover:text-primary transition-colors" id="gap-toggle-doe">DOE Cross-Ref</button>\
+        </div>\
+        <button class="flex items-center gap-2 px-6 py-2.5 bg-secondary-container text-on-secondary-container font-bold rounded-xl text-sm transition-transform active:scale-[0.98]" onclick="generateEditedDirective(\'' + escapeHtml(jobId) + '\')">\
+          <span class="material-symbols-outlined text-[18px]">auto_awesome</span>Generate Edited Directive\
+        </button>\
+      </div>\
     </div>\
-    <div class="p-12 bg-surface-container-lowest rounded-xl text-center text-outline ghost-border">\
-      <span class="material-symbols-outlined text-5xl mb-3 block">analytics</span>\
-      <p class="font-bold text-lg text-primary">Gap Analysis View</p>\
-      <p class="text-sm mt-2 leading-body">Detailed gap analysis and editing tools will be available in a future update.</p>\
-      <a href="#/compare/' + escapeHtml(jobId) + '" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">View Comparison Report</a>\
+    <!-- Split Pane -->\
+    <div class="flex-1 flex overflow-hidden">\
+      <!-- Left: Editor Canvas (60%) -->\
+      <div class="w-[60%] flex flex-col bg-surface-container overflow-hidden">\
+        <!-- Toolbar -->\
+        <div class="px-6 py-3 flex items-center gap-1 bg-surface-container-highest/50 backdrop-blur-md sticky top-0 z-10">\
+          <button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant" title="Bold"><span class="material-symbols-outlined text-[20px]">format_bold</span></button>\
+          <button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant" title="Italic"><span class="material-symbols-outlined text-[20px]">format_italic</span></button>\
+          <button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant" title="List"><span class="material-symbols-outlined text-[20px]">format_list_bulleted</span></button>\
+          <div class="w-px h-6 bg-outline-variant/30 mx-2"></div>\
+          <button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant" title="Link"><span class="material-symbols-outlined text-[20px]">link</span></button>\
+          <div class="w-px h-6 bg-outline-variant/30 mx-2"></div>\
+          <button class="p-2 hover:bg-surface-container rounded transition-colors text-on-surface-variant" title="History"><span class="material-symbols-outlined text-[20px]">history_edu</span></button>\
+          <div class="ml-auto flex items-center gap-3">\
+            <span class="text-[10px] text-outline font-medium" id="gap-save-indicator">Draft</span>\
+          </div>\
+        </div>\
+        <!-- Editor Content -->\
+        <div class="flex-1 overflow-y-auto p-12 no-scrollbar" id="gap-editor-scroll">\
+          <div class="max-w-2xl mx-auto bg-surface-container-lowest p-16 shadow-2xl shadow-primary/5 min-h-[80vh]" id="gap-editor-canvas">\
+            <div class="flex items-center justify-center py-20 text-outline">\
+              <span class="material-symbols-outlined text-3xl animate-spin mr-3">progress_activity</span>\
+              Loading draft...\
+            </div>\
+          </div>\
+        </div>\
+      </div>\
+      <!-- Right: Gap Cards Panel (40%) -->\
+      <div class="w-[40%] bg-surface-container-low overflow-y-auto flex flex-col">\
+        <div class="px-8 py-6 bg-surface-container-highest/20 shrink-0">\
+          <h3 class="text-xs uppercase tracking-[0.2em] font-black text-primary mb-2">Automated Gap Analysis</h3>\
+          <p class="text-sm text-outline" id="gap-doe-ref">Loading...</p>\
+        </div>\
+        <div class="flex-1 overflow-y-auto p-6 space-y-4" id="gap-cards-list">\
+          <div class="flex items-center justify-center py-12 text-outline">\
+            <span class="material-symbols-outlined text-3xl animate-spin mr-3">progress_activity</span>\
+            Loading gaps...\
+          </div>\
+        </div>\
+        <!-- Alignment Score (sticky bottom) -->\
+        <div class="mt-auto p-8 bg-surface-container-highest/50 backdrop-blur-sm shrink-0">\
+          <div class="flex justify-between items-center mb-4">\
+            <span class="text-xs font-bold text-primary uppercase">Alignment Score</span>\
+            <span class="text-xl font-black text-secondary" id="gap-align-pct">--</span>\
+          </div>\
+          <div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">\
+            <div class="bg-secondary h-full transition-all duration-500" style="width:0%" id="gap-align-bar"></div>\
+          </div>\
+          <p class="text-[10px] text-outline mt-3 italic text-center" id="gap-align-label">Calculating alignment...</p>\
+        </div>\
+      </div>\
     </div>\
   </div>';
+
+  // Fetch data in parallel
+  Promise.all([
+    fetch('/api/report/' + encodeURIComponent(jobId)).then(function(r) { return r.ok ? r.json() : null; }),
+    fetch('/api/report/' + encodeURIComponent(jobId) + '/gaps').then(function(r) { return r.ok ? r.json() : null; }),
+    fetch('/api/report/' + encodeURIComponent(jobId) + '/draft').then(function(r) { return r.ok ? r.json() : null; }),
+  ]).then(function(results) {
+    var reportData = results[0];
+    var gapsData = results[1];
+    var draftData = results[2];
+
+    _gapEditorState.report = reportData ? (reportData.report || reportData) : null;
+    _gapEditorState.gaps = gapsData;
+    _gapEditorState.draft = draftData;
+    _gapEditorState.dismissedGaps = {};
+
+    renderGapEditorContent(jobId);
+  }).catch(function(err) {
+    var canvas = document.getElementById('gap-editor-canvas');
+    if (canvas) canvas.innerHTML = '<div class="p-8 text-center text-error"><span class="material-symbols-outlined text-3xl mb-2 block">error</span><p class="font-bold">Failed to load data</p><p class="text-sm mt-1">' + escapeHtml(err.message) + '</p></div>';
+  });
+}
+
+function renderGapEditorContent(jobId) {
+  var report = _gapEditorState.report;
+  var gaps = _gapEditorState.gaps;
+  var draft = _gapEditorState.draft;
+
+  // Update header
+  var breadcrumb = document.getElementById('gap-breadcrumb');
+  var titleEl = document.getElementById('gap-title');
+  var doeRef = document.getElementById('gap-doe-ref');
+
+  if (report) {
+    var netl = report.netl_directive_id || 'Draft';
+    var doe = report.doe_directive_id || '';
+    if (breadcrumb) breadcrumb.textContent = 'Draft ' + netl;
+    if (titleEl) titleEl.textContent = (draft && draft.title) ? draft.title : netl;
+    if (doeRef) doeRef.innerHTML = 'Comparison with <span class="font-bold text-on-surface">' + escapeHtml(doe) + '</span>';
+  }
+
+  // Render editor canvas
+  renderGapEditorCanvas(draft, gaps);
+
+  // Render gap cards
+  renderGapCards(jobId, gaps);
+
+  // Update alignment score
+  if (gaps) {
+    var pct = gaps.alignment_pct || 0;
+    var barEl = document.getElementById('gap-align-bar');
+    var pctEl = document.getElementById('gap-align-pct');
+    var labelEl = document.getElementById('gap-align-label');
+    if (barEl) barEl.style.width = pct + '%';
+    if (pctEl) pctEl.textContent = pct + '%';
+    var critCount = gaps.critical_gaps || 0;
+    if (labelEl) labelEl.textContent = critCount > 0
+      ? critCount + ' critical gap' + (critCount > 1 ? 's' : '') + ' remaining for full DOE compliance.'
+      : 'All critical gaps addressed.';
+  }
+
+  // Update save indicator
+  var saveEl = document.getElementById('gap-save-indicator');
+  if (saveEl && draft && draft.applied_changes && draft.applied_changes.length > 0) {
+    saveEl.textContent = 'Last saved: ' + new Date(draft.updated_at).toLocaleTimeString();
+  }
+}
+
+function renderGapEditorCanvas(draft, gaps) {
+  var canvas = document.getElementById('gap-editor-canvas');
+  if (!canvas) return;
+
+  var sections = (draft && draft.sections) ? draft.sections : [];
+  if (!sections.length) {
+    canvas.innerHTML = '<div class="p-8 text-center text-outline"><span class="material-symbols-outlined text-3xl mb-2 block">description</span><p class="font-bold">No sections available</p><p class="text-sm mt-1">Upload and compare directives to see content here.</p></div>';
+    return;
+  }
+
+  var html = '';
+
+  // Directive header
+  var directiveId = (draft && draft.netl_directive_id) ? draft.netl_directive_id : '';
+  var directiveTitle = (draft && draft.title) ? draft.title : directiveId;
+  var effectiveDate = (draft && draft.effective_date) ? draft.effective_date : '';
+
+  html += '<div class="mb-10 border-b border-surface-container-high pb-8">';
+  html += '<p class="text-[11px] font-bold text-outline uppercase tracking-widest mb-4">' + escapeHtml(directiveId) + '</p>';
+  html += '<h1 class="text-3xl font-black text-primary leading-tight mb-2">' + escapeHtml(directiveTitle) + '</h1>';
+  if (effectiveDate) html += '<p class="text-outline font-medium italic">Effective Date: ' + escapeHtml(effectiveDate) + '</p>';
+  html += '</div>';
+
+  // Sections
+  html += '<div class="space-y-8 text-on-surface leading-relaxed text-base">';
+  for (var i = 0; i < sections.length; i++) {
+    var sec = sections[i];
+    var gapStatus = sec.gap_status || 'aligned';
+    var sectionStatus = sec.status || 'original';
+
+    // Determine styling based on gap status
+    var sectionClass = '';
+    var borderClass = '';
+    if (gapStatus === 'missing_from_netl' || sectionStatus === 'missing') {
+      sectionClass = 'bg-error/5 p-5 rounded-xl';
+      borderClass = 'border-l-4 border-error';
+    } else if (gapStatus === 'misaligned') {
+      sectionClass = 'bg-secondary/5 p-5 rounded-xl';
+      borderClass = 'border-l-4 border-secondary';
+    } else if (gapStatus === 'outdated') {
+      sectionClass = 'bg-primary/5 p-5 rounded-xl';
+      borderClass = 'border-l-4 border-on-primary-container';
+    } else if (sectionStatus === 'modified') {
+      sectionClass = 'bg-secondary/10 p-5 rounded-xl';
+      borderClass = 'border-l-4 border-secondary';
+    } else {
+      sectionClass = '';
+      borderClass = '';
+    }
+
+    html += '<section class="' + sectionClass + ' ' + borderClass + '" id="editor-section-' + escapeHtml(sec.id) + '">';
+    html += '<h3 class="font-bold text-primary text-xl mb-4">' + escapeHtml(sec.id) + '. ' + escapeHtml(sec.heading) + '</h3>';
+
+    if (sectionStatus === 'modified') {
+      html += '<div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span><span class="text-[10px] font-bold uppercase tracking-widest text-secondary">Modified</span></div>';
+    }
+
+    if (gapStatus === 'missing_from_netl' && (!sec.content || sec.content.trim() === '')) {
+      html += '<div class="py-4 text-center text-error/60">';
+      html += '<span class="material-symbols-outlined text-2xl mb-2 block">add_circle_outline</span>';
+      html += '<p class="text-sm font-bold">Missing section — use gap card to generate or apply content</p>';
+      html += '</div>';
+    } else {
+      // Render content with inline highlights for gap details
+      var content = sec.content || '';
+      if (sec.detail && (gapStatus === 'misaligned' || gapStatus === 'outdated')) {
+        html += '<p class="text-base leading-relaxed">' + escapeHtml(content) + '</p>';
+        html += '<div class="mt-3 bg-surface-container-highest/50 p-3 rounded-lg">';
+        html += '<p class="text-[10px] font-bold text-outline uppercase mb-1">Gap Detail</p>';
+        html += '<p class="text-sm italic text-on-surface-variant">' + escapeHtml(sec.detail) + '</p>';
+        html += '</div>';
+      } else {
+        html += '<p class="text-base leading-relaxed">' + escapeHtml(content) + '</p>';
+      }
+    }
+
+    html += '</section>';
+  }
+  html += '</div>';
+
+  canvas.innerHTML = html;
+}
+
+function renderGapCards(jobId, gapsData) {
+  var list = document.getElementById('gap-cards-list');
+  if (!list) return;
+
+  var issues = (gapsData && gapsData.issues) ? gapsData.issues : [];
+
+  // Filter out dismissed gaps
+  var visible = [];
+  for (var i = 0; i < issues.length; i++) {
+    if (!_gapEditorState.dismissedGaps[issues[i].id]) {
+      visible.push(issues[i]);
+    }
+  }
+
+  if (!visible.length) {
+    list.innerHTML = '<div class="py-12 text-center text-outline"><span class="material-symbols-outlined text-3xl mb-2 block">check_circle</span><p class="font-bold text-secondary">All gaps addressed</p><p class="text-sm mt-1">No remaining issues found.</p></div>';
+    return;
+  }
+
+  var html = '';
+  for (var j = 0; j < visible.length; j++) {
+    var issue = visible[j];
+
+    // Determine card type and styling
+    var cardBorder, iconName, badgeColor, badgeLabel;
+    if (issue.type === 'missing') {
+      cardBorder = 'border-l-4 border-error';
+      iconName = 'error_outline';
+      badgeColor = 'text-error';
+      badgeLabel = 'Critical Gap';
+    } else if (issue.type === 'conflict') {
+      cardBorder = 'border-l-4 border-secondary';
+      iconName = 'check_circle';
+      badgeColor = 'text-secondary';
+      badgeLabel = 'Terminology Update';
+    } else if (issue.type === 'outdated') {
+      cardBorder = 'border-l-4 border-on-primary-container';
+      iconName = 'info';
+      badgeColor = 'text-on-primary-container';
+      badgeLabel = 'Optimization';
+    } else {
+      cardBorder = 'border-l-4 border-outline';
+      iconName = 'info';
+      badgeColor = 'text-outline';
+      badgeLabel = issue.type || 'Info';
+    }
+
+    html += '<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm ' + cardBorder + '" id="gap-card-' + escapeHtml(issue.id) + '">';
+
+    // Header
+    html += '<div class="flex items-start justify-between mb-4">';
+    html += '<div class="flex items-center gap-2">';
+    html += '<span class="material-symbols-outlined ' + badgeColor + '">' + iconName + '</span>';
+    html += '<span class="text-[10px] font-bold uppercase tracking-widest ' + badgeColor + '">' + escapeHtml(badgeLabel) + '</span>';
+    html += '</div>';
+    html += '<span class="text-[10px] font-medium text-outline">' + escapeHtml(issue.ref || '') + '</span>';
+    html += '</div>';
+
+    // Title & description
+    html += '<h4 class="font-bold text-primary mb-2">' + escapeHtml(issue.title) + '</h4>';
+    html += '<p class="text-sm text-on-surface-variant mb-4 leading-relaxed">' + escapeHtml(issue.description || '') + '</p>';
+
+    // Suggestion area (initially empty, populated by AI)
+    html += '<div class="hidden bg-surface-container-low p-4 rounded-lg mb-4" id="gap-suggestion-' + escapeHtml(issue.id) + '">';
+    html += '<p class="text-[10px] font-bold text-outline uppercase mb-2">Suggested Addition:</p>';
+    html += '<p class="text-sm italic text-primary" id="gap-suggestion-text-' + escapeHtml(issue.id) + '"></p>';
+    html += '</div>';
+
+    // Actions
+    html += '<div class="flex gap-2">';
+    html += '<button class="flex-1 px-4 py-2 bg-primary text-on-primary text-xs font-bold rounded-lg hover:opacity-90 transition-opacity" onclick="gapSuggestAndApply(\'' + escapeHtml(jobId) + '\', \'' + escapeHtml(issue.id) + '\')">Suggest Edit</button>';
+    html += '<button class="px-4 py-2 text-outline text-xs font-bold hover:text-primary transition-colors" onclick="gapDismiss(\'' + escapeHtml(issue.id) + '\')">Dismiss</button>';
+    html += '<button class="p-2 text-outline hover:text-primary transition-colors" onclick="gapScrollToSection(\'' + escapeHtml(issue.id) + '\')" title="Scroll to section"><span class="material-symbols-outlined text-sm">my_location</span></button>';
+    html += '</div>';
+
+    html += '</div>';
+  }
+  list.innerHTML = html;
+}
+
+function gapSuggestAndApply(jobId, gapId) {
+  showToast('Generating AI suggestion...', 'info');
+
+  fetch('/api/report/' + encodeURIComponent(jobId) + '/suggest', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ gap_id: gapId, context: '' }),
+  })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.suggested_text) {
+        // Show suggestion in the card
+        var suggEl = document.getElementById('gap-suggestion-' + gapId);
+        var textEl = document.getElementById('gap-suggestion-text-' + gapId);
+        if (suggEl) suggEl.classList.remove('hidden');
+        if (textEl) textEl.textContent = data.suggested_text;
+
+        // Show apply modal
+        showGapApplyModal(jobId, gapId, data.suggested_text, data.rationale);
+      } else {
+        showToast(data.rationale || 'No suggestion generated.', 'error');
+      }
+    })
+    .catch(function(e) {
+      showToast('Error generating suggestion: ' + e.message, 'error');
+    });
+}
+
+function showGapApplyModal(jobId, gapId, suggestedText, rationale) {
+  var overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-black/30 backdrop-blur-sm';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-label', 'Apply AI Suggestion');
+  overlay.innerHTML = '\
+    <div class="bg-surface rounded-2xl shadow-ambient-lg p-8 max-w-xl w-full mx-4 space-y-4">\
+      <div class="flex items-center gap-2">\
+        <span class="material-symbols-outlined text-primary">auto_awesome</span>\
+        <h3 class="font-bold text-primary text-lg">AI Suggestion</h3>\
+      </div>\
+      <div class="bg-surface-container-low rounded-xl p-4 text-sm leading-relaxed text-on-surface-variant">' + escapeHtml(suggestedText) + '</div>\
+      <p class="text-xs text-outline"><strong>Rationale:</strong> ' + escapeHtml(rationale || '') + '</p>\
+      <div class="flex gap-3 justify-end">\
+        <button class="px-4 py-2 text-sm font-bold text-outline ghost-border rounded-xl hover:bg-surface-container transition-colors" id="gap-modal-dismiss">Dismiss</button>\
+        <button class="px-4 py-2 text-sm font-bold bg-primary text-on-primary rounded-xl hover:opacity-90 transition-opacity" id="gap-modal-apply">Apply Change</button>\
+      </div>\
+    </div>';
+
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('#gap-modal-dismiss').addEventListener('click', function() { overlay.remove(); });
+  overlay.querySelector('#gap-modal-apply').addEventListener('click', function() {
+    overlay.remove();
+    gapApplyChange(jobId, gapId, suggestedText);
+  });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+  overlay.addEventListener('keydown', function(e) { if (e.key === 'Escape') overlay.remove(); });
+  var firstBtn = overlay.querySelector('#gap-modal-dismiss');
+  if (firstBtn) firstBtn.focus();
+}
+
+function gapApplyChange(jobId, gapId, text) {
+  // Determine section_id from gap_id
+  var sectionId = '';
+  if (gapId.startsWith('sbs-')) {
+    try { sectionId = String(parseInt(gapId.split('-')[1]) + 1); } catch(e) {}
+  }
+
+  fetch('/api/report/' + encodeURIComponent(jobId) + '/apply-suggestion', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ gap_id: gapId, accepted_text: text, section_id: sectionId }),
+  })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.status === 'applied') {
+        showToast('Change applied to draft (v' + data.draft_version + ').', 'success');
+        // Refresh the draft and re-render
+        fetch('/api/report/' + encodeURIComponent(jobId) + '/draft')
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .then(function(d) {
+            if (d) {
+              _gapEditorState.draft = d;
+              renderGapEditorCanvas(d, _gapEditorState.gaps);
+              // Update save indicator
+              var saveEl = document.getElementById('gap-save-indicator');
+              if (saveEl) saveEl.textContent = 'Last saved: just now';
+            }
+          });
+      } else {
+        showToast('Failed to apply change.', 'error');
+      }
+    })
+    .catch(function(e) {
+      showToast('Error applying change: ' + e.message, 'error');
+    });
+}
+
+function gapDismiss(gapId) {
+  _gapEditorState.dismissedGaps[gapId] = true;
+  var card = document.getElementById('gap-card-' + gapId);
+  if (card) {
+    card.style.transition = 'opacity 0.3s, transform 0.3s';
+    card.style.opacity = '0';
+    card.style.transform = 'translateX(20px)';
+    setTimeout(function() {
+      card.remove();
+      // Check if all gaps dismissed
+      var list = document.getElementById('gap-cards-list');
+      if (list && !list.querySelector('[id^="gap-card-"]')) {
+        list.innerHTML = '<div class="py-12 text-center text-outline"><span class="material-symbols-outlined text-3xl mb-2 block">check_circle</span><p class="font-bold text-secondary">All gaps addressed</p><p class="text-sm mt-1">No remaining issues found.</p></div>';
+      }
+    }, 300);
+  }
+  showToast('Gap dismissed.', 'info');
+}
+
+function gapScrollToSection(gapId) {
+  // Parse section id from gap_id
+  var sectionId = '';
+  if (gapId.startsWith('sbs-')) {
+    try { sectionId = String(parseInt(gapId.split('-')[1]) + 1); } catch(e) { return; }
+  } else if (gapId.startsWith('missing-')) {
+    // Missing requirements don't have direct section mapping
+    showToast('This gap does not map to a specific section.', 'info');
+    return;
+  }
+
+  var el = document.getElementById('editor-section-' + sectionId);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Flash highlight
+    el.style.transition = 'box-shadow 0.3s';
+    el.style.boxShadow = '0 0 0 3px rgba(0,25,60,0.3)';
+    setTimeout(function() { el.style.boxShadow = ''; }, 1500);
+  }
+}
+
+function generateEditedDirective(jobId) {
+  // Check for missing sections and try to generate them
+  var draft = _gapEditorState.draft;
+  if (!draft || !draft.sections) {
+    showToast('No draft data available.', 'error');
+    return;
+  }
+
+  var missing = [];
+  for (var i = 0; i < draft.sections.length; i++) {
+    if (draft.sections[i].gap_status === 'missing_from_netl' && (!draft.sections[i].content || !draft.sections[i].content.trim())) {
+      missing.push(draft.sections[i]);
+    }
+  }
+
+  if (!missing.length) {
+    showToast('No missing sections to generate. Use individual gap cards to refine content.', 'info');
+    return;
+  }
+
+  showToast('Generating ' + missing.length + ' missing section(s)...', 'info');
+
+  // Generate first missing section (sequential to avoid overwhelming the API)
+  var sec = missing[0];
+  fetch('/api/report/' + encodeURIComponent(jobId) + '/generate-section', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ doe_section_id: sec.heading || sec.id }),
+  })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.generated_content) {
+        showGapApplyModal(jobId, 'sbs-' + (parseInt(sec.id) - 1), data.generated_content, data.rationale);
+      } else {
+        showToast(data.rationale || 'Failed to generate section.', 'error');
+      }
+    })
+    .catch(function(e) {
+      showToast('Error: ' + e.message, 'error');
+    });
 }
 
 function renderGapsEmpty(container) {
@@ -1053,55 +2323,286 @@ function renderGapsEmpty(container) {
 }
 
 // ── VIEW: HISTORY ──
+var _historyFilter = { verdict: '', sort: 'date', order: 'desc' };
+
 function renderHistory(container) {
   container.innerHTML = '\
   <div class="p-8 space-y-8">\
-    <h2 class="text-3xl font-black tracking-headline text-primary">Comparison History</h2>\
-    <p class="text-sm text-on-surface-variant leading-body">Review past directive comparisons and their results.</p>\
-    <div id="history-list" class="space-y-4">\
-      <div class="p-12 bg-surface-container-lowest rounded-xl text-center text-outline ghost-border">\
-        <span class="material-symbols-outlined text-5xl mb-3 block">history</span>\
-        <p class="font-bold text-lg text-primary">No comparisons yet</p>\
-        <p class="text-sm mt-2 leading-body">Your completed comparisons will appear here.</p>\
-        <a href="#/compare" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">Start First Comparison</a>\
+    <div class="flex items-center justify-between">\
+      <div>\
+        <h2 class="text-3xl font-black tracking-headline text-primary">Comparison History</h2>\
+        <p class="text-sm text-on-surface-variant leading-body mt-1">Review past directive comparisons and their results.</p>\
+      </div>\
+      <a href="#/compare" class="px-5 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity flex items-center gap-2">\
+        <span class="material-symbols-outlined text-lg">add</span>New Comparison\
+      </a>\
+    </div>\
+    <!-- Filter Bar -->\
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 bg-surface-container-lowest rounded-2xl ghost-border">\
+      <div>\
+        <label class="text-[10px] font-bold uppercase tracking-widest text-outline block mb-1.5">Verdict</label>\
+        <select id="hist-filter-verdict" class="w-full px-3 py-2 bg-surface-container rounded-xl text-sm text-on-surface ghost-border focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer">\
+          <option value="">All Verdicts</option>\
+          <option value="yes">Needs Update</option>\
+          <option value="no">Up to Date</option>\
+          <option value="uncertain">Uncertain</option>\
+        </select>\
+      </div>\
+      <div>\
+        <label class="text-[10px] font-bold uppercase tracking-widest text-outline block mb-1.5">Confidence</label>\
+        <select id="hist-filter-confidence" class="w-full px-3 py-2 bg-surface-container rounded-xl text-sm text-on-surface ghost-border focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer">\
+          <option value="">All Levels</option>\
+          <option value="high">High</option>\
+          <option value="medium">Medium</option>\
+          <option value="low">Low</option>\
+        </select>\
+      </div>\
+      <div>\
+        <label class="text-[10px] font-bold uppercase tracking-widest text-outline block mb-1.5">Sort By</label>\
+        <select id="hist-sort" class="w-full px-3 py-2 bg-surface-container rounded-xl text-sm text-on-surface ghost-border focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer">\
+          <option value="date">Date (Newest First)</option>\
+          <option value="date-asc">Date (Oldest First)</option>\
+          <option value="directive">Directive Name (A-Z)</option>\
+          <option value="directive-desc">Directive Name (Z-A)</option>\
+        </select>\
+      </div>\
+      <div class="flex items-end">\
+        <button id="hist-reset-filters" class="w-full px-3 py-2 bg-surface-container-highest rounded-xl text-sm font-semibold text-outline hover:text-primary transition-colors flex items-center justify-center gap-2">\
+          <span class="material-symbols-outlined text-base">filter_alt_off</span>Reset\
+        </button>\
+      </div>\
+    </div>\
+    <!-- Summary Stats -->\
+    <div id="hist-stats" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>\
+    <!-- Results -->\
+    <div id="history-list" class="space-y-3">\
+      <div class="p-8 text-center text-outline">\
+        <span class="material-symbols-outlined text-3xl animate-spin block mb-2">progress_activity</span>\
+        <p class="text-sm">Loading history...</p>\
       </div>\
     </div>\
   </div>';
 
-  loadHistory();
+  _initHistoryFilters();
+  _loadHistory();
 }
 
-function loadHistory() {
+function _initHistoryFilters() {
+  var verdictEl = document.getElementById('hist-filter-verdict');
+  var confidenceEl = document.getElementById('hist-filter-confidence');
+  var sortEl = document.getElementById('hist-sort');
+  var resetBtn = document.getElementById('hist-reset-filters');
+
+  if (verdictEl) verdictEl.addEventListener('change', function() {
+    _historyFilter.verdict = this.value;
+    _loadHistory();
+  });
+  if (confidenceEl) confidenceEl.addEventListener('change', function() {
+    _historyFilter.confidence = this.value;
+    _loadHistory();
+  });
+  if (sortEl) sortEl.addEventListener('change', function() {
+    var val = this.value;
+    if (val === 'date') { _historyFilter.sort = 'date'; _historyFilter.order = 'desc'; }
+    else if (val === 'date-asc') { _historyFilter.sort = 'date'; _historyFilter.order = 'asc'; }
+    else if (val === 'directive') { _historyFilter.sort = 'directive'; _historyFilter.order = 'asc'; }
+    else if (val === 'directive-desc') { _historyFilter.sort = 'directive'; _historyFilter.order = 'desc'; }
+    _loadHistory();
+  });
+  if (resetBtn) resetBtn.addEventListener('click', function() {
+    _historyFilter = { verdict: '', confidence: '', sort: 'date', order: 'desc' };
+    if (verdictEl) verdictEl.value = '';
+    if (confidenceEl) confidenceEl.value = '';
+    if (sortEl) sortEl.value = 'date';
+    _loadHistory();
+  });
+}
+
+function _loadHistory() {
   var target = document.getElementById('history-list');
   if (!target) return;
 
-  fetch('/api/reports')
+  var qs = '?sort=' + _historyFilter.sort + '&order=' + _historyFilter.order;
+  if (_historyFilter.verdict) qs += '&verdict=' + _historyFilter.verdict;
+  if (_historyFilter.confidence) qs += '&confidence=' + _historyFilter.confidence;
+
+  fetch('/api/reports' + qs)
     .then(function(res) {
-      if (!res.ok) return null;
+      if (!res.ok) return [];
       return res.json();
     })
     .then(function(reports) {
-      if (!reports || !reports.length) return;
-      var html = '';
-      for (var i = 0; i < reports.length; i++) {
-        var r = reports[i];
-        var verdictBg = r.needs_update === 'yes' ? 'bg-error/10 text-error' :
-                        r.needs_update === 'no' ? 'bg-secondary/10 text-secondary' :
-                        'bg-surface-container-highest text-outline';
-        html += '<a href="#/compare/' + escapeHtml(r.job_id) + '" class="block p-5 bg-surface-container-lowest rounded-xl ghost-border hover:shadow-ambient transition-all">' +
-          '<div class="flex items-center gap-4">' +
-            '<span class="px-3 py-1 text-[10px] font-bold uppercase rounded-xl ' + verdictBg + '">' + escapeHtml(r.needs_update || 'unknown') + '</span>' +
-            '<div class="flex-1">' +
-              '<p class="font-bold text-primary text-sm">' + escapeHtml(r.doe_directive_id || r.job_id) + ' vs ' + escapeHtml(r.netl_directive_id || '\u2014') + '</p>' +
-              '<p class="text-xs text-outline mt-0.5">' + escapeHtml((r.summary || '').substring(0, 120)) + ((r.summary || '').length > 120 ? '...' : '') + '</p>' +
-            '</div>' +
-            '<span class="text-xs text-outline font-mono">' + escapeHtml(r.job_id) + '</span>' +
-          '</div>' +
-        '</a>';
-      }
-      target.innerHTML = html;
+      _renderHistoryStats(reports || []);
+      _renderHistoryList(reports || []);
     })
-    .catch(function() {});
+    .catch(function() {
+      target.innerHTML = '\
+        <div class="p-8 bg-error-container/10 rounded-xl text-center">\
+          <span class="material-symbols-outlined text-3xl text-error block mb-2">error</span>\
+          <p class="text-sm text-error font-semibold">Failed to load history</p>\
+        </div>';
+    });
+}
+
+function _renderHistoryStats(reports) {
+  var statsEl = document.getElementById('hist-stats');
+  if (!statsEl) return;
+
+  var total = reports.length;
+  var needsUpdate = 0, upToDate = 0, uncertain = 0;
+  for (var i = 0; i < reports.length; i++) {
+    if (reports[i].needs_update === 'yes') needsUpdate++;
+    else if (reports[i].needs_update === 'no') upToDate++;
+    else uncertain++;
+  }
+
+  statsEl.innerHTML = '\
+    <div class="p-4 bg-surface-container-lowest rounded-xl ghost-border text-center">\
+      <span class="text-3xl font-black text-primary">' + total + '</span>\
+      <p class="text-[10px] font-bold uppercase tracking-widest text-outline mt-1">Total Reports</p>\
+    </div>\
+    <div class="p-4 bg-surface-container-lowest rounded-xl ghost-border text-center">\
+      <span class="text-3xl font-black text-error">' + needsUpdate + '</span>\
+      <p class="text-[10px] font-bold uppercase tracking-widest text-outline mt-1">Needs Update</p>\
+    </div>\
+    <div class="p-4 bg-surface-container-lowest rounded-xl ghost-border text-center">\
+      <span class="text-3xl font-black text-secondary">' + upToDate + '</span>\
+      <p class="text-[10px] font-bold uppercase tracking-widest text-outline mt-1">Up to Date</p>\
+    </div>\
+    <div class="p-4 bg-surface-container-lowest rounded-xl ghost-border text-center">\
+      <span class="text-3xl font-black text-outline">' + uncertain + '</span>\
+      <p class="text-[10px] font-bold uppercase tracking-widest text-outline mt-1">Uncertain</p>\
+    </div>';
+}
+
+function _renderHistoryList(reports) {
+  var target = document.getElementById('history-list');
+  if (!target) return;
+
+  if (!reports.length) {
+    target.innerHTML = '\
+      <div class="p-12 bg-surface-container-lowest rounded-xl text-center text-outline ghost-border">\
+        <span class="material-symbols-outlined text-5xl mb-3 block">history</span>\
+        <p class="font-bold text-lg text-primary">No comparisons found</p>\
+        <p class="text-sm mt-2 leading-body">' +
+          (_historyFilter.verdict || _historyFilter.confidence
+            ? 'No reports match the current filters. Try adjusting your filters.'
+            : 'Your completed comparisons will appear here.') +
+        '</p>\
+        <a href="#/compare" class="inline-block mt-4 px-6 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">Start First Comparison</a>\
+      </div>';
+    return;
+  }
+
+  var html = '';
+  for (var i = 0; i < reports.length; i++) {
+    var r = reports[i];
+    var verdictBg = r.needs_update === 'yes' ? 'bg-error/10 text-error border-error/20' :
+                    r.needs_update === 'no' ? 'bg-secondary/10 text-secondary border-secondary/20' :
+                    'bg-surface-container-highest text-outline border-outline-variant/20';
+    var verdictLabel = r.needs_update === 'yes' ? 'Needs Update' :
+                       r.needs_update === 'no' ? 'Up to Date' : 'Uncertain';
+    var confBg = r.confidence === 'high' ? 'text-secondary' :
+                 r.confidence === 'medium' ? 'text-yellow-600' :
+                 r.confidence === 'low' ? 'text-error' : 'text-outline';
+    var dateStr = '';
+    if (r.created_at) {
+      try {
+        var d = new Date(r.created_at);
+        dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+                  ' at ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      } catch(e) { dateStr = r.created_at; }
+    }
+
+    html += '\
+    <div class="group p-5 bg-surface-container-lowest rounded-xl ghost-border hover:shadow-ambient transition-all">\
+      <div class="flex items-start gap-4">\
+        <div class="flex flex-col items-center gap-2 min-w-[90px]">\
+          <span class="px-3 py-1 text-[10px] font-bold uppercase rounded-xl border ' + verdictBg + '">' + escapeHtml(verdictLabel) + '</span>\
+          <span class="text-[10px] font-semibold ' + confBg + ' uppercase">' + escapeHtml(r.confidence || '—') + '</span>\
+        </div>\
+        <a href="#/compare/' + escapeHtml(r.job_id) + '" class="flex-1 min-w-0 cursor-pointer">\
+          <div class="flex items-center gap-2 mb-1">\
+            <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest bg-tertiary/10 text-tertiary rounded-lg">DOE</span>\
+            <p class="font-bold text-primary text-sm truncate">' + escapeHtml(r.doe_directive_id || r.job_id) + '</p>\
+            <span class="text-outline text-xs">vs</span>\
+            <span class="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest bg-primary/10 text-primary rounded-lg">NETL</span>\
+            <p class="font-bold text-primary text-sm truncate">' + escapeHtml(r.netl_directive_id || '—') + '</p>\
+          </div>\
+          <p class="text-xs text-outline mt-1 line-clamp-2">' + escapeHtml((r.summary || '').substring(0, 180)) + ((r.summary || '').length > 180 ? '...' : '') + '</p>\
+        </a>\
+        <div class="flex flex-col items-end gap-2 min-w-[140px] shrink-0">\
+          <div class="flex items-center gap-2">';
+
+    // Alignment bar
+    if (typeof r.alignment_pct === 'number') {
+      html += '\
+            <div class="w-16 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">\
+              <div class="h-full rounded-full transition-all ' + (r.alignment_pct >= 80 ? 'bg-secondary' : r.alignment_pct >= 50 ? 'bg-yellow-500' : 'bg-error') + '" style="width:' + r.alignment_pct + '%"></div>\
+            </div>\
+            <span class="text-xs font-mono font-bold ' + (r.alignment_pct >= 80 ? 'text-secondary' : r.alignment_pct >= 50 ? 'text-yellow-600' : 'text-error') + '">' + r.alignment_pct + '%</span>';
+    }
+
+    html += '\
+          </div>\
+          <span class="text-[10px] text-outline">' + escapeHtml(dateStr) + '</span>\
+          <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">\
+            <a href="#/compare/' + escapeHtml(r.job_id) + '" class="p-1.5 rounded-lg hover:bg-primary/10 text-primary transition-colors" title="View Report">\
+              <span class="material-symbols-outlined text-base">visibility</span>\
+            </a>\
+            <a href="#/gaps/' + escapeHtml(r.job_id) + '" class="p-1.5 rounded-lg hover:bg-secondary/10 text-secondary transition-colors" title="Gap Analysis">\
+              <span class="material-symbols-outlined text-base">analytics</span>\
+            </a>\
+            <button onclick="event.stopPropagation(); _deleteReport(\'' + escapeHtml(r.job_id) + '\')" class="p-1.5 rounded-lg hover:bg-error/10 text-error transition-colors" title="Delete Report">\
+              <span class="material-symbols-outlined text-base">delete</span>\
+            </button>\
+          </div>\
+        </div>\
+      </div>\
+    </div>';
+  }
+  target.innerHTML = html;
+}
+
+function _deleteReport(jobId) {
+  // Show inline confirmation modal instead of browser confirm()
+  var overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-black/30 backdrop-blur-sm';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-label', 'Confirm deletion');
+  overlay.innerHTML = '\
+    <div class="bg-surface rounded-2xl shadow-ambient-lg p-8 max-w-md w-full mx-4 space-y-4">\
+      <div class="flex items-center gap-2">\
+        <span class="material-symbols-outlined text-error" aria-hidden="true">warning</span>\
+        <h3 class="font-bold text-primary text-lg">Delete Report?</h3>\
+      </div>\
+      <p class="text-sm text-on-surface-variant leading-relaxed">This will permanently remove report <strong>' + escapeHtml(jobId.substring(0, 8)) + '...</strong> and all associated files.</p>\
+      <div class="flex gap-3 justify-end">\
+        <button class="px-4 py-2 text-sm font-bold text-outline ghost-border rounded-xl hover:bg-surface-container transition-colors" id="del-cancel">Cancel</button>\
+        <button class="px-4 py-2 text-sm font-bold bg-error text-on-error rounded-xl hover:opacity-90 transition-opacity" id="del-confirm">Delete</button>\
+      </div>\
+    </div>';
+
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('#del-cancel').addEventListener('click', function() { overlay.remove(); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+  overlay.addEventListener('keydown', function(e) { if (e.key === 'Escape') overlay.remove(); });
+  overlay.querySelector('#del-cancel').focus();
+
+  overlay.querySelector('#del-confirm').addEventListener('click', function() {
+    overlay.remove();
+    fetch('/api/reports/' + encodeURIComponent(jobId), { method: 'DELETE' })
+      .then(function(res) {
+        if (!res.ok) throw new Error('Delete failed');
+        showToast('Report deleted', 'success');
+        _loadHistory();
+      })
+      .catch(function(e) {
+        showToast('Failed to delete report: ' + e.message, 'error');
+      });
+  });
 }
 
 // ── UPLOAD LOGIC ──
@@ -1193,35 +2694,197 @@ function listenProgress(jobId) {
   var pct = document.getElementById('progress-pct');
   if (!log || !fill || !pct) return;
 
-  var es = new EventSource('/api/status/' + encodeURIComponent(jobId));
+  var retryCount = 0;
+  var maxRetries = 5;
 
-  es.addEventListener('progress', function(e) {
-    var data = JSON.parse(e.data);
-    fill.style.width = data.progress + '%';
-    pct.textContent = data.progress + '%';
+  function connect() {
+    var es = new EventSource('/api/status/' + encodeURIComponent(jobId));
 
-    var entry = document.createElement('div');
-    entry.className = 'stage-' + data.stage;
-    entry.innerHTML = '<span class="stage-tag">' + escapeHtml(data.stage) + '</span>' + escapeHtml(data.detail);
-    log.appendChild(entry);
-    log.scrollTop = log.scrollHeight;
-  });
+    es.addEventListener('progress', function(e) {
+      retryCount = 0; // Reset on successful message
+      var data = JSON.parse(e.data);
+      fill.style.width = data.progress + '%';
+      pct.textContent = data.progress + '%';
 
-  es.addEventListener('complete', function(e) {
-    es.close();
-    var data = JSON.parse(e.data);
-    if (data.status === 'done') {
-      window.location.hash = '#/compare/' + jobId;
-    } else {
-      pct.textContent = 'Error';
-      fill.style.background = '#ba1a1a';
-    }
-  });
+      var entry = document.createElement('div');
+      entry.className = 'stage-' + data.stage;
+      entry.innerHTML = '<span class="stage-tag">' + escapeHtml(data.stage) + '</span>' + escapeHtml(data.detail);
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
+    });
 
-  es.onerror = function() {
-    es.close();
-    pct.textContent = 'Connection lost';
-  };
+    es.addEventListener('complete', function(e) {
+      es.close();
+      var data = JSON.parse(e.data);
+      if (data.status === 'done') {
+        window.location.hash = '#/compare/' + jobId;
+      } else {
+        pct.textContent = 'Error';
+        fill.style.background = '#ba1a1a';
+        showToast('Comparison failed: ' + (data.detail || 'Unknown error'), 'error');
+      }
+    });
+
+    es.onerror = function() {
+      es.close();
+      retryCount++;
+      if (retryCount <= maxRetries) {
+        var delay = Math.min(1000 * Math.pow(2, retryCount - 1), 16000);
+        pct.textContent = 'Reconnecting (' + retryCount + '/' + maxRetries + ')...';
+        setTimeout(connect, delay);
+      } else {
+        pct.textContent = 'Connection lost';
+        showToast('Lost connection to server. Please refresh and try again.', 'error');
+      }
+    };
+  }
+
+  connect();
+}
+
+// ── Notes Panel ──
+var _notesPanel = null;
+
+function _getActiveJobId() {
+  if (AppState.activeJob) return AppState.activeJob;
+  var m = window.location.hash.match(/^#\/(?:compare|gaps)\/([a-f0-9]+)$/);
+  return m ? m[1] : null;
+}
+
+function toggleNotesPanel() {
+  if (_notesPanel) {
+    _notesPanel.remove();
+    _notesPanel = null;
+    return;
+  }
+
+  var jobId = _getActiveJobId();
+  if (!jobId) {
+    showToast('Navigate to a comparison report to use notes.', 'info');
+    return;
+  }
+
+  _notesPanel = document.createElement('div');
+  _notesPanel.id = 'notes-panel';
+  _notesPanel.className = 'fixed bottom-28 right-8 z-[60] w-80 bg-surface rounded-2xl shadow-ambient-lg ghost-border flex flex-col overflow-hidden';
+  _notesPanel.style.maxHeight = '420px';
+  _notesPanel.innerHTML = '\
+    <div class="px-5 py-4 bg-surface-container-low flex items-center justify-between shrink-0">\
+      <div class="flex items-center gap-2">\
+        <span class="material-symbols-outlined text-primary text-lg">notes</span>\
+        <h3 class="font-bold text-primary text-sm uppercase tracking-widest">Notes</h3>\
+      </div>\
+      <button onclick="toggleNotesPanel()" class="p-1 text-outline hover:text-primary transition-colors rounded">\
+        <span class="material-symbols-outlined text-lg">close</span>\
+      </button>\
+    </div>\
+    <div class="flex-1 overflow-y-auto p-4 space-y-3 hide-scrollbar" id="notes-list">\
+      <div class="text-center py-6 text-outline">\
+        <span class="material-symbols-outlined text-2xl animate-spin">progress_activity</span>\
+      </div>\
+    </div>\
+    <div class="px-4 py-3 bg-surface-container-low shrink-0">\
+      <div class="flex gap-2">\
+        <input type="text" id="note-input" placeholder="Add a note..." class="flex-1 px-3 py-2 text-sm bg-surface-container-lowest rounded-lg ghost-border focus:ring-2 focus:ring-primary/20 focus:outline-none" onkeydown="if(event.key===\'Enter\')addNote()">\
+        <button onclick="addNote()" class="px-3 py-2 bg-primary text-on-primary rounded-lg text-sm font-bold hover:opacity-90 transition-opacity">\
+          <span class="material-symbols-outlined text-base">send</span>\
+        </button>\
+      </div>\
+    </div>';
+
+  document.body.appendChild(_notesPanel);
+  loadNotes(jobId);
+  var input = document.getElementById('note-input');
+  if (input) input.focus();
+}
+
+function loadNotes(jobId) {
+  var list = document.getElementById('notes-list');
+  if (!list) return;
+
+  fetch('/api/report/' + encodeURIComponent(jobId) + '/notes')
+    .then(function(r) { return r.ok ? r.json() : []; })
+    .then(function(notes) {
+      if (!notes.length) {
+        list.innerHTML = '<div class="text-center py-6 text-outline"><span class="material-symbols-outlined text-2xl block mb-2">sticky_note_2</span><p class="text-xs">No notes yet</p></div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < notes.length; i++) {
+        var n = notes[i];
+        var dateStr = '';
+        try { dateStr = new Date(n.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch(e) {}
+        html += '<div class="p-3 bg-surface-container-lowest rounded-xl group">';
+        html += '<p class="text-sm text-on-surface leading-relaxed">' + escapeHtml(n.text) + '</p>';
+        html += '<div class="flex items-center justify-between mt-2">';
+        html += '<span class="text-[10px] text-outline">' + escapeHtml(dateStr) + '</span>';
+        html += '<button onclick="deleteNote(\'' + escapeHtml(n.id) + '\')" class="opacity-0 group-hover:opacity-100 p-1 text-error hover:bg-error/10 rounded transition-all" title="Delete note">';
+        html += '<span class="material-symbols-outlined text-xs">delete</span></button>';
+        html += '</div></div>';
+      }
+      list.innerHTML = html;
+      list.scrollTop = list.scrollHeight;
+    })
+    .catch(function() {
+      list.innerHTML = '<div class="text-center py-4 text-error text-xs">Failed to load notes</div>';
+    });
+}
+
+function addNote() {
+  var input = document.getElementById('note-input');
+  if (!input || !input.value.trim()) return;
+  var jobId = _getActiveJobId();
+  if (!jobId) return;
+
+  var text = input.value.trim();
+  input.value = '';
+  input.disabled = true;
+
+  fetch('/api/report/' + encodeURIComponent(jobId) + '/notes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: text }),
+  })
+    .then(function(r) {
+      input.disabled = false;
+      if (!r.ok) throw new Error('Failed');
+      loadNotes(jobId);
+      input.focus();
+    })
+    .catch(function() {
+      input.disabled = false;
+      showToast('Failed to save note.', 'error');
+    });
+}
+
+function deleteNote(noteId) {
+  var jobId = _getActiveJobId();
+  if (!jobId) return;
+
+  fetch('/api/report/' + encodeURIComponent(jobId) + '/notes/' + encodeURIComponent(noteId), {
+    method: 'DELETE',
+  })
+    .then(function(r) {
+      if (!r.ok) throw new Error('Failed');
+      loadNotes(jobId);
+    })
+    .catch(function() {
+      showToast('Failed to delete note.', 'error');
+    });
+}
+
+// ── PDF Export ──
+function exportPdf(jobId) {
+  window.open('/api/report/' + encodeURIComponent(jobId) + '/export-pdf', '_blank');
+}
+
+function exportCurrentPdf() {
+  var jobId = _getActiveJobId();
+  if (jobId) {
+    exportPdf(jobId);
+  } else {
+    showToast('Navigate to a comparison report first to export.', 'info');
+  }
 }
 
 // ── Toast Notifications ──
@@ -1234,6 +2897,8 @@ function showToast(message, type) {
 
   var toast = document.createElement('div');
   toast.className = 'fixed top-4 right-4 z-[100] px-6 py-3 rounded-xl shadow-ambient-lg ' + (colors[type] || colors.info) + ' text-sm font-semibold transition-all duration-300';
+  toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+  toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
   toast.textContent = message;
   document.body.appendChild(toast);
 

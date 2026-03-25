@@ -65,7 +65,7 @@ Single `index.html` with hash routing:
 
 ---
 
-## Phase 2: Dashboard View
+## Phase 2: Dashboard View ✅ COMPLETED
 
 **Goal:** Implement the overview dashboard from `sketch/dashboard.html`.
 
@@ -124,7 +124,7 @@ Single `index.html` with hash routing:
 
 ---
 
-## Phase 3: Directives Library View
+## Phase 3: Directives Library View ✅ COMPLETED
 
 **Goal:** Implement the browsable library from `sketch/library.html`.
 
@@ -266,7 +266,7 @@ Single `index.html` with hash routing:
 
 ---
 
-## Phase 5: Gap Analysis / Editor View
+## Phase 5: Gap Analysis / Editor View ✅ COMPLETED
 
 **Goal:** Implement the split-pane editor from `sketch/gap_analysis.html`.
 
@@ -310,7 +310,7 @@ Single `index.html` with hash routing:
 
 ---
 
-## Phase 6: History & Persistence
+## Phase 6: History & Persistence ✅ COMPLETED
 
 **Goal:** Add job history, report browsing, and persistent storage.
 
@@ -353,20 +353,20 @@ Single `index.html` with hash routing:
 
 ---
 
-## Phase 7: Polish & Cross-Cutting Concerns
+## Phase 7: Polish & Cross-Cutting Concerns ✅ COMPLETED
 
-### 7.1 Design System Compliance Audit
+### 7.1 Design System Compliance Audit ✅ COMPLETED
 
 Verify every view against `sketch/DESIGN.md` rules:
 
-- [ ] No 1px solid borders for sectioning (tonal shifts only)
-- [ ] Ghost borders (outline-variant at 15% opacity) only where high-contrast accessibility required
-- [ ] Public Sans font at all scales with correct letter-spacing
-- [ ] Asymmetric grid proportions (sidebar 2-col vs content 10-col)
-- [ ] Glassmorphism on floating elements only (toolbar, modals)
-- [ ] Color-for-intent: secondary green = success/positive states only
-- [ ] Ambient shadows only on floating/modal elements (24–40px blur, 4–6% opacity)
-- [ ] No pure black text — use `on-surface` (#1e1b1c)
+- [x] No 1px solid borders for sectioning (tonal shifts only)
+- [x] Ghost borders (outline-variant at 15% opacity) only where high-contrast accessibility required
+- [x] Public Sans font at all scales with correct letter-spacing
+- [x] Asymmetric grid proportions (sidebar 2-col vs content 10-col)
+- [x] Glassmorphism on floating elements only (toolbar, modals)
+- [x] Color-for-intent: secondary green = success/positive states only
+- [x] Ambient shadows only on floating/modal elements (24–40px blur, 4–6% opacity)
+- [x] No pure black text — use `on-surface` (#1e1b1c)
 
 ### 7.2 Responsive Behavior
 

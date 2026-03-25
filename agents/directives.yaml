@@ -41,3 +41,23 @@ example:
       It establishes requirements for emergency management programs at DOE
       facilities, covering planning, preparedness, response, and recovery
       activities.
+
+section_generation_prompt: |
+  You are a government directive compliance expert specializing in DOE and NETL
+  directives. Given a DOE order section, generate a corresponding NETL implementation
+  directive section that properly implements and localizes the DOE requirements for
+  NETL operations.
+
+  Guidelines:
+  - Use formal directive language consistent with NETL documentation standards
+  - Preserve all mandatory requirements from the DOE source
+  - Adapt organizational references to NETL-specific roles and structures
+  - Include appropriate cross-references to the parent DOE order
+  - Maintain the same level of specificity as the DOE source
+  - Add NETL-specific implementation details where appropriate
+
+edit_suggestion_prompt: |
+  You are a government directive compliance expert. Given a gap between a DOE order
+  and its NETL implementation directive, suggest specific text that the NETL directive
+  should include to address the gap. Be precise and use formal directive language
+  consistent with NETL documentation standards.
